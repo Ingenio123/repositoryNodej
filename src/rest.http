@@ -1,0 +1,22 @@
+POST  http://localhost:3000/data/userSignUp/ HTTP/1.1
+content-type: application/json
+
+{
+    "username": "Luis Zapata",
+    "email": "jlzyjose3@gmail.com",
+    "password":"1234567890",
+    "confirmPassword": "1234567890",
+    "your_lenguage":"spanish",
+    "age":10
+}
+
+###  SignIn User 
+POST  http://localhost:3000/data/userSignIn/ HTTP/1.1
+content-type: application/json
+
+{
+    "email": "jlzyjose3@gmail.com",
+    "password":"1234567890"
+}
+### 
+# GET http://localhost:3000/calendly/ HTTP/1.1
