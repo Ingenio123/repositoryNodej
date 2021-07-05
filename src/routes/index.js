@@ -17,6 +17,8 @@ const {createOneFlags,assignTeachertoFlag, deleteFlag, getallFlags} = require('.
 const {GoogleAuth} = require('../controllers/googleAuth')
 const {UserId} = require('../controllers/userController')
 
+const {ClientPay} = require('../controllers/payController')
+
 
 router.get('/',  (req, res) => {
   res.render('index', {
@@ -90,6 +92,8 @@ router.post('/teacher/reviewStudent', verifyToken,verifyIsTeacher,teacherReview)
 
 // create Student
 router.post('/data/createStudent',verifyToken,createOneStudent)
+
+router.post('/payIngenioLanguages',ClientPay) 
 
 
 
