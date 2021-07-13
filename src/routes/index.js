@@ -17,7 +17,7 @@ const {createOneFlags,assignTeachertoFlag, deleteFlag, getallFlags} = require('.
 const {GoogleAuth} = require('../controllers/googleAuth')
 const {UserId} = require('../controllers/userController')
 
-const {ClientPay} = require('../controllers/payController')
+const {ClientPay,datafastResultEnd} = require('../controllers/payController')
 
 
 router.get('/',  (req, res) => {
@@ -69,6 +69,14 @@ router.get('/data/user/:_id',verifyToken, UserId)
 router.get('/data/teacherAccount/:_id',verifyToken,verifyIsTeacher, UserId ) //teacher Account 
 
 router.get('/data/getAllStudents',verifyToken,verifyIsTeacher, getAll ) //get all students
+
+// ------>  RECIVIR DATOS DE UN ACTION 
+router.get('/data/actions',(req,res)=>{
+  console.log(req.query.id);
+  return res.redirect(`http://localhost:3000/results/?id=${req.query.id}`)
+})
+
+
 /* 
   ------------------
         POST
@@ -93,7 +101,9 @@ router.post('/teacher/reviewStudent', verifyToken,verifyIsTeacher,teacherReview)
 // create Student
 router.post('/data/createStudent',verifyToken,createOneStudent)
 
-router.post('/payIngenioLanguages',ClientPay) 
+router.post('/payIngenioLanguages',ClientPay)
+
+router.post('/data/datafastresults',datafastResultEnd);
 
 
 

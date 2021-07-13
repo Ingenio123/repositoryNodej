@@ -14,7 +14,7 @@ const  sendCheckOut = async () =>{
         city = 'Guayaquil',
         country = 'EC',
         CodePostal = 1245,
-        entityId='8a829418533cf31d01533d06f2ee06fa',
+        entityId='8ac7a4c87a1e95a8017a1fd6acae073c',
         amount = 3,
         VALOR_PRODUCTO = 5,
         VALOR_IVA = 0.60,
@@ -22,7 +22,6 @@ const  sendCheckOut = async () =>{
         DESCRIPTION_PRODUCT = 'curso de ingenio languages gracias por tu compra',
         PRICE_PRODUCT = 5,
         QUANTY_PRODUCT = 1;
-
     try {
         
 
@@ -35,7 +34,7 @@ const  sendCheckOut = async () =>{
         axios.post(`https://test.oppwa.com/v1/checkouts?entityId=${entityId}&amount=${amount}&currency=USD&paymentType=DB&customer.givenName=${firstName}&customer.middleName=${secondName}&customer.surname=${surname}&customer.ip=${ipClient}&customer.merchantCustomerId=${idClient}&merchantTransactionId=transaction_112233&customer.email=${email}&customer.identificationDocType=IDCARD&customer.identificationDocId=${Nid}&customer.phone=${numberPhone}&billing.street1=${city}&billing.country=${country}&billing.postcode=${CodePostal}&shipping.street1=${city}&shipping.country=${country}&risk.parameters%5BUSER_DATA2%5D=DATAFAST&customParameters%5BSHOPPER_MID%5D=1000000505&customParameters%5BSHOPPER_TID%5D=PD100406&customParameters%5BSHOPPER_ECI%5D=0103910&customParameters%5BSHOPPER_PSERV%5D=17913101&customParameters%5BSHOPPER_VAL_BASE0%5D=0&customParameters%5BSHOPPER_VAL_BASEIMP%5D=${VALOR_PRODUCTO}&customParameters%5BSHOPPER_VAL_IVA%5D=${VALOR_IVA}&cart.items%5B0%5D.name=${NAME_PRODUCT}&cart.items%5B0%5D.description=${DESCRIPTION_PRODUCT}&cart.items%5B0%5D.price=${PRICE_PRODUCT}&cart.items%5B0%5D.quantity=${QUANTY_PRODUCT}&customParameters%5BSHOPPER_VERSIONDF%5D=2&testMode=EXTERNAL`,data,{
             httpsAgent : agent,
             headers:{
-                'Authorization':'Bearer OGE4Mjk0MTg1MzNjZjMxZDAxNTMzZDA2ZmQwNDA3NDh8WHQ3RjIyUUVOWA=='
+                'Authorization':'Bearer OGE4Mjk0MTg1YTY1YmY1ZTAxNWE2YzhjNzI4YzBkOTV8YmZxR3F3UTMyWA=='
             }
         })
         .then(res => console.log(res.data))
@@ -142,9 +141,30 @@ const dataApi = (entityId,items,total,valorIva,base12,base0,email,primer_nombre,
 }
 
 
+const  sendCheckOut2 = async () =>{
+
+    const params = new URLSearchParams({
+        entityId: '8a829418533cf31d01533d06f2ee06fa',
+        amount: 92.00,
+        currency: 'USD',
+        paymentType: 'DB',
+
+    })
+    const url =  'https://test.oppwa.com/v1/checkouts?' + params;
+    console.log(params)
+    const data = {};
+ 
+    const res = await axios.post(url,data,{headers:{
+        'Authorization':'Bearer OGE4Mjk0MTg1MzNjZjMxZDAxNTMzZDA2ZmQwNDA3NDh8WHQ3RjIyUUVOWA=='
+    }})
+    
+    console.log(res.data);
+}
+
 
 module.exports = {
-    sendCheckOut
+    sendCheckOut,
+    sendCheckOut2
 }
 
 

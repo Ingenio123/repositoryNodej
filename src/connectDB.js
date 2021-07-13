@@ -17,6 +17,17 @@ const conect_db =   async ()=>{
     catch(err){
         console.log(err)
     }
+    // try {
+    //      mongoose.connect('mongodb://localhost/ingenio_app_Lenguages',{
+    //         useNewUrlParser: true
+    //     })
+    //         .then(db =>  console.log(`conectado con exito `))
+    //         .catch(err =>  console.log(err))
+
+    // }
+    // catch(err){
+    //     console.log(err)
+    // }
     
 }  
 
