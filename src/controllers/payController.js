@@ -67,9 +67,10 @@ const SendDatafast  = async (City,Country,PostCode,firstNameParams,secondName,la
     const VALOR_PRODUCTO =  parseInt(SumaPrices);
     const VALOR_IVA = addIva(VALOR_PRODUCTO,12)
 
-
-    const entityId='8ac7a4c87a1e95a8017a1fd6acae073c'
-
+    
+    // const entityId='8ac7a4c87a1e95a8017a1fd6acae073c'
+    
+    const entityId='8ac9a4cb7aa3ea13017ab0abd88775d3'
 
     // #######################################
     var valores = DestructArray(items)
@@ -80,14 +81,16 @@ const SendDatafast  = async (City,Country,PostCode,firstNameParams,secondName,la
         const agent = new https.Agent({  
             rejectUnauthorized: false
         });
+        
+        // const url = `https://test.oppwa.com/v1/checkouts?entityId=${entityId}&amount=${amount}&currency=USD&paymentType=DB&customer.givenName=${firstName}&customer.middleName=${SecondName}&customer.surname=${surname}&customer.ip=${ipClient}&customer.merchantCustomerId=${idClient}&merchantTransactionId=transaction_112233&customer.email=${email}&customer.identificationDocType=IDCARD&customer.identificationDocId=${number_Cedula}&customer.phone=${numberPhone}&billing.street1=${city}&billing.country=${country}&billing.postcode=${CodePostal}&shipping.street1=${city}&shipping.country=${country}&risk.parameters%5BUSER_DATA2%5D=INGENIO&customParameters%5BSHOPPER_MID%5D=1000000505&customParameters%5BSHOPPER_TID%5D=PD100406&customParameters%5BSHOPPER_ECI%5D=0103910&customParameters%5BSHOPPER_PSERV%5D=17913101&customParameters%5BSHOPPER_VAL_BASE0%5D=0&customParameters%5BSHOPPER_VAL_BASEIMP%5D=${VALOR_PRODUCTO}&customParameters%5BSHOPPER_VAL_IVA%5D=${VALOR_IVA}&${valorestotales}&customParameters%5BSHOPPER_VERSIONDF%5D=2&testMode=EXTERNAL`
 
-        const url = `https://test.oppwa.com/v1/checkouts?entityId=${entityId}&amount=${amount}&currency=USD&paymentType=DB&customer.givenName=${firstName}&customer.middleName=${SecondName}&customer.surname=${surname}&customer.ip=${ipClient}&customer.merchantCustomerId=${idClient}&merchantTransactionId=transaction_112233&customer.email=${email}&customer.identificationDocType=IDCARD&customer.identificationDocId=${number_Cedula}&customer.phone=${numberPhone}&billing.street1=${city}&billing.country=${country}&billing.postcode=${CodePostal}&shipping.street1=${city}&shipping.country=${country}&risk.parameters%5BUSER_DATA2%5D=INGENIO&customParameters%5BSHOPPER_MID%5D=1000000505&customParameters%5BSHOPPER_TID%5D=PD100406&customParameters%5BSHOPPER_ECI%5D=0103910&customParameters%5BSHOPPER_PSERV%5D=17913101&customParameters%5BSHOPPER_VAL_BASE0%5D=0&customParameters%5BSHOPPER_VAL_BASEIMP%5D=${VALOR_PRODUCTO}&customParameters%5BSHOPPER_VAL_IVA%5D=${VALOR_IVA}&${valorestotales}&customParameters%5BSHOPPER_VERSIONDF%5D=2&testMode=EXTERNAL`
+        const url = `https://oppwa.com/v1/checkouts?entityId=${entityId}&amount=${amount}&currency=USD&paymentType=DB&customer.givenName=${firstName}&customer.middleName=${SecondName}&customer.surname=${surname}&customer.ip=${ipClient}&customer.merchantCustomerId=${idClient}&merchantTransactionId=transaction_112233&customer.email=${email}&customer.identificationDocType=IDCARD&customer.identificationDocId=${number_Cedula}&customer.phone=${numberPhone}&billing.street1=${city}&billing.country=${country}&billing.postcode=${CodePostal}&shipping.street1=${city}&shipping.country=${country}&risk.parameters%5BUSER_DATA2%5D=INGENIO&customParameters%5BSHOPPER_MID%5D=4200003938&customParameters%5BSHOPPER_TID%5D=BP374772&customParameters%5BSHOPPER_ECI%5D=0103910&customParameters%5BSHOPPER_PSERV%5D=17913101&customParameters%5BSHOPPER_VAL_BASE0%5D=0&customParameters%5BSHOPPER_VAL_BASEIMP%5D=${VALOR_PRODUCTO}&customParameters%5BSHOPPER_VAL_IVA%5D=${VALOR_IVA}&${valorestotales}&customParameters%5BSHOPPER_VERSIONDF%5D=2`
 
         try {
             let resultados = await axios.post(url,data,{
                 httpsAgent : agent,
                 headers:{
-                    'Authorization':'Bearer OGE4Mjk0MTg1YTY1YmY1ZTAxNWE2YzhjNzI4YzBkOTV8YmZxR3F3UTMyWA=='
+                    'Authorization':'Bearer OGFjOWE0Y2I3YWEzZWExMzAxN2FiMGE5Y2ViZjc1YTh8aHN5RzlrSmtBbQ=='
                 }
             })
             return resultados.data;
@@ -125,8 +128,10 @@ const datafastResultEnd = async (req,res,next)=>{
     const entityId = '8ac7a4c87a1e95a8017a1fd6acae073c';
     data={};
     
-    const url = `https://test.oppwa.com/v1/checkouts/${id}/payment?entityId=${entityId}`
+    // const url = `https://test.oppwa.com/v1/checkouts/${id}/payment?entityId=${entityId}`
+    const url = `https://oppwa.com/v1/checkouts/${id}/payment?entityId=${entityId}`
     console.log(url)
+    
     try {
 
         axios.get(url,{
