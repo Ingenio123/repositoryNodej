@@ -6,19 +6,8 @@ const conect_db =   async ()=>{
     const MONGO_PORT = '27017';
     const MONGO_DB = 'IngenioApi';
 
-    try {
-         mongoose.connect(`mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOSTNAME}:${MONGO_PORT}/${MONGO_DB}?authSource=admin`,{
-            useNewUrlParser: true
-        })
-            .then(db =>  console.log(`conectado con exito `))
-            .catch(err =>  console.log(err))
-
-    }
-    catch(err){
-        console.log(err)
-    }
     // try {
-    //      mongoose.connect('mongodb://localhost/ingenio_app_Lenguages',{
+    //      mongoose.connect(`mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOSTNAME}:${MONGO_PORT}/${MONGO_DB}?authSource=admin`,{
     //         useNewUrlParser: true
     //     })
     //         .then(db =>  console.log(`conectado con exito `))
@@ -28,6 +17,17 @@ const conect_db =   async ()=>{
     // catch(err){
     //     console.log(err)
     // }
+    try {
+         mongoose.connect('mongodb://localhost/ingenio_app_Lenguages',{
+            useNewUrlParser: true
+        })
+            .then(db =>  console.log(`conectado con exito `))
+            .catch(err =>  console.log(err))
+
+    }
+    catch(err){
+        console.log(err)
+    }
     
 }  
 

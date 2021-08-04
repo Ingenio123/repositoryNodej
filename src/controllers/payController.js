@@ -38,7 +38,7 @@ const  ClientPay =  async (req,res,next)=>{
         email)
     let cobrar = String(Cobrar)
     if(EncontrarNumero(cobrar, '.')){
-        cobrar = cobrar + 0
+        cobrar = cobrar
     }
 
 
@@ -54,6 +54,8 @@ const  ClientPay =  async (req,res,next)=>{
 
 const SendDatafast  = async (City,Country,PostCode,firstNameParams,secondName,lastName,numberCedula,numberCellPhone,ipClientParams,Cobrar,SumaPrices,items,idClient,email) =>{
 
+
+   
     const number_Cedula = parseInt(numberCedula);
     const city = String(City);
     const country = String(Country);
@@ -86,6 +88,7 @@ const SendDatafast  = async (City,Country,PostCode,firstNameParams,secondName,la
 
         const url = `https://oppwa.com/v1/checkouts?entityId=${entityId}&amount=${amount}&currency=USD&paymentType=DB&customer.givenName=${firstName}&customer.middleName=${SecondName}&customer.surname=${surname}&customer.ip=${ipClient}&customer.merchantCustomerId=${idClient}&merchantTransactionId=transaction_112233&customer.email=${email}&customer.identificationDocType=IDCARD&customer.identificationDocId=${number_Cedula}&customer.phone=${numberPhone}&billing.street1=${city}&billing.country=${country}&billing.postcode=${CodePostal}&shipping.street1=${city}&shipping.country=${country}&risk.parameters%5BUSER_DATA2%5D=INGENIO&customParameters%5BSHOPPER_MID%5D=4200003938&customParameters%5BSHOPPER_TID%5D=BP374772&customParameters%5BSHOPPER_ECI%5D=0103910&customParameters%5BSHOPPER_PSERV%5D=17913101&customParameters%5BSHOPPER_VAL_BASE0%5D=0&customParameters%5BSHOPPER_VAL_BASEIMP%5D=${VALOR_PRODUCTO}&customParameters%5BSHOPPER_VAL_IVA%5D=${VALOR_IVA}&${valorestotales}&customParameters%5BSHOPPER_VERSIONDF%5D=2`
 
+        console.log(url)
         try {
             let resultados = await axios.post(url,data,{
                 httpsAgent : agent,

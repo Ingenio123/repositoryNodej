@@ -36,17 +36,17 @@ clouddinary.config({
 // middlewares
 app.use(cors())
 
-const whitelist = ['http://localhost:3000'];
+// const whitelist = ['http://localhost:3000'];
 
-const corsOption = {
-  origin: function(origin,callback){
-    if(whitelist.indexOf(origin) !== -1){
-      callback(null,true);
-    }else{
-      callback(new Error("not allowed by cors :( "))
-    }
-  }
-}
+// const corsOption = {
+//   origin: function(origin,callback){
+//     if(whitelist.indexOf(origin) !== -1){
+//       callback(null,true);
+//     }else{
+//       callback(new Error("not allowed by cors :( "))
+//     }
+//   }
+// }
 
 app.use(morgan("dev"))
 app.use(express.urlencoded({extended: true}))
@@ -120,7 +120,8 @@ app.get('/auth/google/failure', (req, res) => {
 // failureRedirect: '/auth/google/failure'
 
 // routes
-app.use(cors(corsOption),require('./routes/index'));
+app.use(require('./routes/index'));
+app.use(require('./routes/temary'))
 // static folder
 app.use(express.static(path.join(__dirname, 'public')));
 

@@ -75,8 +75,6 @@ router.get('/data/actions',(req,res)=>{
   console.log(req.query.id);
   return res.redirect(`http://localhost:3000/results/?id=${req.query.id}`)
 })
-
-
 /* 
   ------------------
         POST
