@@ -2,19 +2,17 @@ const {Schema,model} = require('mongoose')
 const {hash,genSalt,compare} = require('bcrypt')
 
 const userSchema =  new Schema({
-    username: {
+    FirstName: {
         type:String,
-        required:true, 
+    },
+    LastName:{
+        type:String
     },
     email:{
         type:String,
         require:true
     },
     password:{
-        type:String,
-        
-    },
-    your_lenguage:{
         type:String,
         
     },
@@ -45,6 +43,12 @@ const userSchema =  new Schema({
     }],
     numberCell:{
         type:Number
+    },
+    Gender:{
+        type:String
+    },
+    Country:{
+        type:String
     },
     roles:[{
         type:Schema.Types.ObjectId,
