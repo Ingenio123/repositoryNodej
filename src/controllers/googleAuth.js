@@ -20,6 +20,7 @@ const GoogleAuth = async (req, res) => {
       const user = await User.findOne({ email })
         .select("-password")
         .populate("roles");
+
       if (user) {
         const token = jwt.sign({ id: user._id }, "secret", {
           expiresIn: "1d",
