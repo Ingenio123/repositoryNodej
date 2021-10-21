@@ -135,7 +135,9 @@ const UserId = async (req, res, next) => {
     return res
       .status(400)
       .json({ success: false, message: "error invalid token" });
-  const result = await User.findById(_id).select("-password");
+  const result = await User.findById(_id).select("-password").populate("roles");
+  console.log(result);
+
   const { email, FirstName, picture } = result;
   return res.status(200).json({
     success: true,

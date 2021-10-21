@@ -10,6 +10,7 @@ const {
   CreateNewStudent,
   VerifySiExisteELStudent,
   UpdateStudent,
+  NewCache,
 } = require("./ControllerPago/ControllerPago");
 
 const ClientPay = async (req, res, next) => {
@@ -29,7 +30,6 @@ const ClientPay = async (req, res, next) => {
     id,
     email,
   } = req.body;
-
   console.log(
     City,
     Country,
@@ -48,9 +48,9 @@ const ClientPay = async (req, res, next) => {
     email
   );
   const Userdata = await User.findOne({ email: email });
-  const datosStruct = await StructItemsCompra(items, email, Userdata._id);
+  await NewCache(Userdata._id, items);
+  // const datosStruct = await StructItemsCompra(items, email, Userdata._id);
   // const DatosStudent = await CreateNewStudent(Userdata);
-  console.log(datosStruct);
 
   let cobrar = String(Cobrar);
   if (EncontrarNumero(cobrar, ".")) {
@@ -75,7 +75,7 @@ const ClientPay = async (req, res, next) => {
   );
 
   return res.status(200).json({
-    message: "todo  salio bien tranquilo hombre",
+    message: "todo  salio bien tranquilo hombre aatt luis",
     resultados,
   });
 };
@@ -245,10 +245,13 @@ const AddStudent = async (codeResultado, emailCustomer) => {
 const addCourse = async (email) => {
   const userData = await User.findOne({ email });
   const verify = await VerifySiExisteELStudent(userData.email);
-  if (verify) {
+  if (verify.success) {
     await UpdateStudent(verify.student, userData);
+    console.log("Student Existe");
+    return true;
   }
-  // await CreateNewStudent(userData);
+  const newStudent = await CreateNewStudent(userData);
+  console.log("Nuevo Student", newStudent);
 
   // const fetching = async () => {
   //   const UserData = await User.findOne({ email });

@@ -123,7 +123,7 @@ router.get("/data/datafastresults/:id", datafastResultEnd);
  *
  * @params id ->  http://localhost:4000/data/courses/:id
  *  */
-router.get("/data/courses/:id", QueryCourseforIdiom);
+router.get("/data/courses", QueryCourseforIdiom);
 
 /**
  * @params id ->  del Estudiante ->   http://localhost:4000/data/verifyIstudent/
@@ -182,5 +182,10 @@ router.put("/data/addTeacherFlag/:id", assignTeachertoFlag); //asing teacher to 
 router.put("/data/addFlagToTeachers/:_id", addFlagtoTeachers);
 
 router.delete("/data/deletedFlag/:_id", deleteFlag);
+const email = require("../controllers/ControllerEmails/index");
+router.post("/sendmail", (req, res) => {
+  email.sendMail();
+  res.status(200).json({ msg: "ok" });
+});
 
 module.exports = router;

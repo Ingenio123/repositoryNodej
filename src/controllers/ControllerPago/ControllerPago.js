@@ -4,6 +4,16 @@ const User = require("../../models/user"),
   CacheCompra = require("../../models/DataCache"),
   Course = require("../../models/courses");
 
+const NewCache = async (idUser, dataCourse) => {
+  const newcacheData = new CacheCompra({
+    idUser,
+    dataCourse, // Array []
+  });
+  const res = await newcacheData.save();
+  if (res) return true;
+  return false;
+};
+
 // Aqui   estaran todos  los controladores de pago como Busquedas  etc
 const QueryRole = async (nameRole) => {
   const role = await Rol.findOne({ name: nameRole });
@@ -34,7 +44,7 @@ const VerifySiExisteELStudent = async (email) => {
   if (!ExisteStudent) return { success: false };
   return { success: true, student: ExisteStudent };
 };
-
+// ##########################################################
 const UpdateStudent = async (dataStudent, userData) => {
   const { _id, email } = userData;
   console.log(dataStudent, "Datos del User", userData);
@@ -73,7 +83,11 @@ const StructItemsCompra = async (itemsArray, Email) => {
   });
   const res = await itemsCompra.save();
 
-  if (!res) return false;
+  if (!res) {
+    console.log("No hay datos en la  cache");
+    return false;
+  }
+
   return {
     success: true,
     idCompra: res._id,
@@ -85,7 +99,7 @@ const CreateNewStudent = async (user) => {
 
   const resCache = await DatosCache(_id);
 
-  console.log(resCache);
+  console.log("dATOS DEL CACHE", resCache);
 
   const result1 = await StudentRol(user);
   if (result1 === false) return { success: false };
@@ -112,6 +126,7 @@ const CreateNewStudent = async (user) => {
   };
 };
 
+// #####################################################################
 const DatosCache = async (idUser) => {
   const DatosCache = await CacheCompra.findOne({ idUser: idUser });
   const { dataCourse } = DatosCache;
@@ -121,6 +136,7 @@ const DatosCache = async (idUser) => {
     dataCourse,
   };
 };
+// ###########################################################################
 
 const DeleteCache = async (idCache) => {
   const res = await CacheCompra.findByIdAndDelete(idCache);
@@ -134,4 +150,5 @@ module.exports = {
   DeleteCache,
   VerifySiExisteELStudent,
   UpdateStudent,
+  NewCache,
 };

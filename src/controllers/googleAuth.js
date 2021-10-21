@@ -8,6 +8,7 @@ const Role = require("../models/roles");
 
 const GoogleAuth = async (req, res) => {
   const { idToken } = req.body;
+
   try {
     const result = await client.verifyIdToken({
       idToken,
@@ -26,12 +27,13 @@ const GoogleAuth = async (req, res) => {
           expiresIn: "1d",
         });
 
-        const rol = user.roles[0].name;
+        const rol = getLastArrItem(user.roles);
+        // const rol = user.roles[0].name;
         const { _id, email, username, picture } = user;
 
         return res.status(200).json({
           success: true,
-          user: { _id, email, username, picture, rol, token },
+          user: { _id, email, username, picture, rol: rol.name, token },
         });
       } else {
         let password = email + "secret";
@@ -75,10 +77,17 @@ const GoogleAuth = async (req, res) => {
       });
     }
   } catch (error) {
-    return res.status(400).json({
+    console.log(error);
+    return res.status(403).json({
       success: false,
     });
   }
+};
+
+const getLastArrItem = (arr) => {
+  let lastItem = arr[arr.length - 1];
+  console.log(`Last element is ${lastItem}`);
+  return lastItem;
 };
 
 module.exports = {

@@ -7,7 +7,8 @@ module.exports = {
   getAll: async (req, res, next) => {
     const students = await Student.find({}, { __v: 0 })
       .sort({ age: -1 })
-      .populate("courses");
+      .populate({ path: "courses", populate: { path: "CourseData" } });
+    console.log(JSON.stringify(students));
     return res.status(200).json({
       success: true,
       students,
@@ -90,12 +91,16 @@ module.exports = {
    **/
   DataStudent: async (req, res, next) => {
     const id = req.id; // req.id -->   este es el id que da accesso el json web token ( JWT )
+    if (!id) return res.status(400).json({ message: "Err, client" });
     const Query = await User.findById(id);
     const { email } = Query;
     const QueryStudent = await Student.findOne({ email }).populate({
       path: "courses",
       populate: { path: "CourseData" },
     });
+
+    if (!QueryStudent)
+      return res.status(200).json({ success: false, Student: [] });
 
     return res.status(200).json({
       success: true,

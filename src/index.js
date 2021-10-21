@@ -120,6 +120,7 @@ app.get("/auth/google/failure", (req, res) => {
 app.use(require("./routes/index"));
 app.use(require("./routes/paypal"));
 app.use(require("./routes/temary"));
+app.use(require("./routes/summay"));
 // static folder
 app.use(express.static(path.join(__dirname, "public")));
 

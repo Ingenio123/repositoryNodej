@@ -38,65 +38,82 @@ module.exports = {
     });
   },
   getAllCourses: async (req, res) => {
-    const courses = await Courses.find().populate("teachers");
+    const courses = await Courses.find().populate(
+      "teachers",
+      "firstName eslogan imageUrl"
+    );
     if (!courses)
       return res.status(400).json({
         success: false,
         message: "err 400",
       });
+
     return res.status(200).json({
       success: true,
       courses,
     });
-    // .exec((err, result) => {
-    //   return res.status(200).json({
-    //     success: true,
-    //     courses: result,
-    //   });
-    // });
   },
   assignTeacher: async (req, res, next) => {
     const _id = req.params.id;
     const { teachers } = req.body;
+    try {
+      await Courses.findByIdAndUpdate(
+        _id,
+        {
+          $push: { teachers: teachers },
+        },
+        { useFindAndModify: false }
+      )
+        .populate("teachers")
+        .exec((err, result) => {
+          if (err)
+            return res.status(400).json({
+              success: false,
+              message: "Error data client",
+            });
 
-    const courseUpdated = await Courses.findByIdAndUpdate(
-      _id,
-      {
-        $push: { teachers: teachers },
-      },
-      { useFindAndModify: false }
-    )
-      .populate("teachers")
-      .exec((err, result) => {
-        res.status(200).json({
-          success: true,
-          message: "asign Course  successffully",
-          courseUpdated: result,
+          res.status(200).json({
+            success: true,
+            message: "asign Course  successffully",
+            courseUpdated: result,
+          });
         });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({
+        message: "Server is on Eroor",
       });
+    }
   },
 
   QueryCourseforIdiom: async (req, res, next) => {
-    const { id } = req.params;
-    const Query = await Courses.findById(id).populate("teachers");
-    const { teachers } = Query;
-    if (Query) {
-      const datos = teachers.map((item, index, arr) => {
-        return {
-          firstName: item.firstName,
-          lastName: item.lastName,
-          img: item.imageUrl,
-          eslogan: item.eslogan,
-        };
-      });
-      return res.status(200).json({
-        success: true,
-        datos,
-      });
+    // const { id } = req.params;
+    const { idiom } = req.query;
+    if (!idiom)
+      return res.status(400).json({ status: false, message: "Bad Request" });
+    try {
+      const Query = await Courses.findOne({ nameCourse: idiom }).populate(
+        "teachers"
+      );
+      if (!Query)
+        return res.status(400).json({ success: false, message: "Error" });
+      const { teachers } = Query;
+      if (Query) {
+        const datos = teachers.map((item, index, arr) => {
+          return {
+            firstName: item.firstName,
+            lastName: item.lastName,
+            img: item.imageUrl,
+            eslogan: item.eslogan,
+          };
+        });
+        return res.status(200).json({
+          success: true,
+          datos,
+        });
+      }
+    } catch (error) {
+      return res.status(500).json({ message: "Err on Server" });
     }
-    return res.status(400).json({
-      success: false,
-      message: "Err not found",
-    });
   },
 };

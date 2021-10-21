@@ -23,6 +23,7 @@ exports.verifyAge = (req, res, next) => {
 
 exports.verifyToken = async (req, res, next) => {
   const autorization = req.headers["authorization"];
+
   const token = autorization.split(" ")[1];
   if (!token)
     return res
@@ -62,7 +63,7 @@ exports.verifyIsStudent = async (req, res, next) => {
     }
   }
 
-  return res.status(401).json({
+  return res.status(400).json({
     success: false,
     message: "necesitas ser student",
   });
