@@ -82,7 +82,7 @@ const signInUser = async (req, res, next) => {
   if (!isMatch)
     return res
       .status(400)
-      .json({ success: true, message: "email / password doest not match!" });
+      .json({ success: false, message: "email / password doest not match!" });
 
   const userData = { id: user._id, email: user.email };
 

@@ -1,0 +1,67 @@
+@host = localhost:4000
+
+POST  http://localhost:3000/data/userSignUp/ HTTP/1.1
+content-type: application/json
+
+{
+    "username": "Luis Zapata",
+    "email": "jlzyjose3@gmail.com",
+    "password":"1234567890",
+    "confirmPassword": "1234567890",
+    "your_lenguage":"spanish",
+    "age":10
+}
+
+###  SignIn User 
+POST  http://localhost:3000/data/userSignIn/ HTTP/1.1
+content-type: application/json
+
+{
+    "email": "jlzyjose3@gmail.com",
+    "password":"1234567890"
+}
+### 
+# GET http://localhost:3000/calendly/ HTTP/1.1
+
+
+###
+GET  http://localhost:4000/data/verifyIstudent/ HTTP/1.1
+
+### Get all teachers 
+GET  http://localhost:4000/data/getAllTeachers
+
+#### Get all courses ### 
+GET http://localhost:4000/data/getAllCourses
+### firstName eslogan  imageUrl 
+
+
+#### 
+GET http://{{host}}/verifyData/61745d0455606f2ab4ebb318
+
+
+#######
+POST  http://{{host}}/paypal/createPayment
+content-type: application/json
+{
+    "priceTotal":20
+}
+
+######
+GET http://{{host}}/democlass
+Content-Type: application/json
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxNDYwMmRiYzE0MzI1MzNiYzAwOGMyMyIsImlhdCI6MTYzNjIxMzg2NSwiZXhwIjoxNjM2MzAwMjY1fQ.umqyn4J5-wiwTmCSBrJ1l5-T8LR5KeuNPI223xHjMcA
+
+######
+GET http://{{host}}/getdataDemoclass
+Content-Type: application/json
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxNDY1MmFiM2VjYTMzMGI0YzYxYzc3MiIsImVtYWlsIjoibHVpc0BnbWFpbC5jb20iLCJpYXQiOjE2MzYyMjM2MzksImV4cCI6MTYzNjMxMDAzOX0.6aUPKJ0iKCvOQ8GOnSEePccbGfP8xGWbecULx_094ZM
+
+
+###### ADD DATA CALENDAR ############
+PUT http://localhost:4000/data/addCalendarTeacher/61251ecfcebe8b1da840e57b HTTP/1.1
+Content-Type: application/json
+{
+    "time": "30",
+    "urlCalendar": "https://www.ingeniocalendar.com/libary%20m/30-min-lessons",
+}
+#####

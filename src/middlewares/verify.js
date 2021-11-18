@@ -23,8 +23,8 @@ exports.verifyAge = (req, res, next) => {
 
 exports.verifyToken = async (req, res, next) => {
   const autorization = req.headers["authorization"];
-
   const token = autorization.split(" ")[1];
+
   if (!token)
     return res
       .status(401)

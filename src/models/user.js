@@ -1,86 +1,95 @@
-const {Schema,model} = require('mongoose')
-const {hash,genSalt,compare} = require('bcrypt')
+const { Schema, model } = require("mongoose");
+const { hash, genSalt, compare } = require("bcrypt");
 
-const userSchema =  new Schema({
+const userSchema = new Schema(
+  {
     FirstName: {
-        type:String,
+      type: String,
     },
-    LastName:{
-        type:String
+    LastName: {
+      type: String,
     },
-    email:{
-        type:String,
-        require:true
+    email: {
+      type: String,
+      require: true,
     },
-    password:{
-        type:String,
-        
+    password: {
+      type: String,
     },
-    age:{
-        type:Number,
-        
+    age: {
+      type: Number,
     },
     date: {
       type: Date,
-      default: Date.now
+      default: Date.now,
     },
-    student:{
-        type: Boolean,
-        default:false
+    student: {
+      type: Boolean,
+      default: false,
     },
-    googleAuth:{
-        type:Boolean,
-        default:false
+    googleAuth: {
+      type: Boolean,
+      default: false,
     },
     picture: {
-        type:String,
-        trim:true,
-        default:'https://res.cloudinary.com/ingenio/image/upload/v1623097143/avatar_eyqooo.png'
+      type: String,
+      trim: true,
+      default:
+        "https://res.cloudinary.com/ingenio/image/upload/v1623097143/avatar_eyqooo.png",
     },
-    curses:[{
+    curses: [
+      {
         type: Schema.Types.ObjectId,
-        ref:"Courses"
-    }],
-    numberCell:{
-        type:Number
+        ref: "Courses",
+      },
+    ],
+    numberCell: {
+      type: Number,
     },
-    Gender:{
-        type:String
+    Gender: {
+      type: String,
     },
-    Country:{
-        type:String
+    Country: {
+      type: String,
     },
-    roles:[{
-        type:Schema.Types.ObjectId,
-        ref:'Role'
-    }]
-
-},{ timestamps: true })
-
+    roles: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Role",
+      },
+    ],
+    SecondEmail: {
+      type: String,
+    },
+    democlass: {
+      classDemo: { type: Boolean, defaul: false },
+      requireDemo: { type: Boolean, default: false },
+      nameTeacherDemo: { type: String },
+    },
+  },
+  { timestamps: true }
+);
 
 /* ----------------------------------------------------------
     verificacion  si esta guardando el password encriptarlo  
 ------------------------------------------------------------- */
 
-userSchema.pre('save', async function(next){
-    const user = this;
-    if(!user.isModified("password")) return next();
-    const salt = await genSalt(10);
-    const hashPassword  = await hash(user.password, salt);
-    user.password = hashPassword ;
-    next();
-})
+userSchema.pre("save", async function (next) {
+  const user = this;
+  if (!user.isModified("password")) return next();
+  const salt = await genSalt(10);
+  const hashPassword = await hash(user.password, salt);
+  user.password = hashPassword;
+  next();
+});
 
 /* ----------------------------------------------------------
     methos de  password de comparacion de password  
 ------------------------------------------------------------- */
 
-userSchema.methods.comparePassword = async function(password){
-    return await compare(password,this.password)
-}
+userSchema.methods.comparePassword = async function (password) {
+  return await compare(password, this.password);
+};
 
-userSchema.plugin(require('mongoose-autopopulate'));
-module.exports  =  model("User",userSchema);
-
-
-
+userSchema.plugin(require("mongoose-autopopulate"));
+module.exports = model("User", userSchema);

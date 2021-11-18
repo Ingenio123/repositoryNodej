@@ -164,7 +164,39 @@ module.exports = {
         });
       });
   },
-
+  addCalendarTeacher: async (req, res) => {
+    const { _id } = req.params;
+    const { time, url_calendar } = req.body;
+    if (!time || !url_calendar)
+      return res.status(400).json({
+        error: true,
+        message: "Data incomplete",
+      });
+    // ----------->  Query and Update <-------------- //
+    const teacher = await Teachers.findByIdAndUpdate(
+      _id,
+      {
+        $push: {
+          calendar: {
+            time: time,
+            urlCalendar: url_calendar,
+          },
+        },
+      },
+      {
+        useFindAndModify: false,
+      }
+    );
+    if (!teacher)
+      return res.status(400).json({
+        error: true,
+        message: "Id teacher not exist",
+      });
+    return res.status(200).json({
+      error: false,
+      message: "Ok",
+    });
+  },
   teacherReview: (req, res, next) => {
     return res.status(200).json({
       success: true,

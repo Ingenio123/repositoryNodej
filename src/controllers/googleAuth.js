@@ -15,7 +15,7 @@ const GoogleAuth = async (req, res) => {
       audience:
         "669011089415-8gtepgk9pivth0itvut5tom96kn9r7i1.apps.googleusercontent.com",
     });
-    const { email_verified, email, name, picture } = result.payload;
+    const { email_verified, email, picture } = result.payload;
 
     if (email_verified) {
       const user = await User.findOne({ email })
@@ -38,7 +38,6 @@ const GoogleAuth = async (req, res) => {
       } else {
         let password = email + "secret";
         const newuser = new User({
-          FirstName: name,
           email,
           password,
           picture,

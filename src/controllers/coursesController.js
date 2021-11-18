@@ -96,15 +96,22 @@ module.exports = {
         "teachers"
       );
       if (!Query)
-        return res.status(400).json({ success: false, message: "Error" });
+        return res
+          .status(400)
+          .json({ success: false, message: "Error: Idiom not found" });
       const { teachers } = Query;
+      /**
+       * ---------------------------------
+       *            DATA -->
+       * ---------------------------------
+       */
       if (Query) {
         const datos = teachers.map((item, index, arr) => {
           return {
             firstName: item.firstName,
-            lastName: item.lastName,
             img: item.imageUrl,
             eslogan: item.eslogan,
+            calendar: item.calendar,
           };
         });
         return res.status(200).json({

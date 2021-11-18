@@ -10,6 +10,7 @@ const {
   getAllTeachers,
   addFlagtoTeachers,
   teacherReview,
+  addCalendarTeacher,
 } = require("../controllers/teachersController");
 
 const {
@@ -61,6 +62,11 @@ const {
   CodeDescuento,
 } = require("../controllers/CodeDescuento/CodeDescuento");
 
+/**
+  --------------------------
+             GET
+  --------------------------
+ */
 router.get("/", (req, res) => {
   res.render("index", {
     logged: false,
@@ -85,6 +91,11 @@ router.get("/calendly", (req, res) => {
   res.render("calendly");
 });
 
+/* 
+  ------------------------------- 
+          TEACHERS
+  --------------------------------
+*/
 router.get("/teacher", (req, res, next) => {
   res.render("teacher");
 });
@@ -94,6 +105,8 @@ router.get("/data/getAllTeachers", getAllTeachers); //get all teachers
 router.get("/data/teacher/:id", getTeacherId); //obtener un solo docente
 
 router.get("/data/teacher", getCourses); //obtener dato de los cursos que tiene / da  el docente
+
+router.get("/data/teacherAccount/:_id", verifyToken, verifyIsTeacher, UserId); //teacher Account
 
 router.get("/data/getAllCourses", getAllCourses);
 
@@ -107,8 +120,6 @@ router.get("/data/me", verifyToken, verifyIsAdmin, (req, res, next) => {
     .json({ msg: "todo  bien ", id: `el id es ${req.userId} ` });
 });
 router.get("/data/user/:_id", verifyToken, UserId);
-
-router.get("/data/teacherAccount/:_id", verifyToken, verifyIsTeacher, UserId); //teacher Account
 
 router.get("/data/getAllStudents", verifyToken, verifyIsTeacher, getAll); //get all students
 
@@ -128,7 +139,7 @@ router.get("/data/courses", QueryCourseforIdiom);
 /**
  * @params id ->  del Estudiante ->   http://localhost:4000/data/verifyIstudent/
  */
-router.get("/data/verifyIstudent/", verifyToken, verifyIsStudent, DataStudent);
+router.get("/data/verifyIstudent", verifyToken, verifyIsStudent, DataStudent);
 /*
   ------------------
         POST
@@ -174,18 +185,29 @@ router.post("/payIngenioLanguages", ClientPay);
 router.post("/createCodeDescuento", CreateCodeDescuento);
 router.post("/verifycodeDescuento", CodeDescuento);
 
-// ########### PUT  ###############
-router.put("/data/updateTeacher/:id", updateTeachersData); // ############   UPDATE DATA TEACHER            ######
-router.put("/data/updateImgProfile/:id", updateImgProfile); // ############   UPDATE PROFILE IMG     ######
-router.put("/data/addTeacherCourses/:id", assignTeacher); //#############   ADD TEACHER A COURSE   ######
-router.put("/data/addTeacherFlag/:id", assignTeachertoFlag); //asing teacher to Bandera
-router.put("/data/addFlagToTeachers/:_id", addFlagtoTeachers);
-
-router.delete("/data/deletedFlag/:_id", deleteFlag);
+// -----------------------------------------------------------
 const email = require("../controllers/ControllerEmails/index");
 router.post("/sendmail", (req, res) => {
   email.sendMail();
   res.status(200).json({ msg: "ok" });
 });
+// -----------------------------------------------------------
+/*
+  -------------------------------
+             PUT
+  -------------------------------
+ */
+router.put("/data/updateTeacher/:id", updateTeachersData); // ############   UPDATE DATA TEACHER            ######
+router.put("/data/updateImgProfile/:id", updateImgProfile); // ############   UPDATE PROFILE IMG     ######
+router.put("/data/addTeacherCourses/:id", assignTeacher); //#############   ADD TEACHER A COURSE   ######
+router.put("/data/addTeacherFlag/:id", assignTeachertoFlag); //asing teacher to Bandera
+router.put("/data/addFlagToTeachers/:_id", addFlagtoTeachers);
+router.put("/data/addCalendarTeacher/:_id", addCalendarTeacher); //add utl calendar
+/*
+  -------------------------------
+              DELETE
+  -------------------------------
+ */
+router.delete("/data/deletedFlag/:_id", deleteFlag);
 
 module.exports = router;
