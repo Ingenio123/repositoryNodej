@@ -132,7 +132,7 @@ router.get("/data/actions", (req, res) => {
 router.get("/data/datafastresults/:id", datafastResultEnd);
 /**
  *
- * @params id ->  http://localhost:4000/data/courses/:id
+ * @params id ->  http://localhost:4000/data/courses?idiom= x
  *  */
 router.get("/data/courses", QueryCourseforIdiom);
 

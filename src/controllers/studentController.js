@@ -8,7 +8,7 @@ module.exports = {
     const students = await Student.find({}, { __v: 0 })
       .sort({ age: -1 })
       .populate({ path: "courses", populate: { path: "CourseData" } });
-    console.log(JSON.stringify(students));
+
     return res.status(200).json({
       success: true,
       students,

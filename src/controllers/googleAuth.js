@@ -8,7 +8,7 @@ const Role = require("../models/roles");
 
 const GoogleAuth = async (req, res) => {
   const { idToken } = req.body;
-
+  console.log(idToken)
   try {
     const result = await client.verifyIdToken({
       idToken,
