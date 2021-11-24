@@ -37,7 +37,7 @@ const GetDataUser = async (req, res, next) => {
   if (democlass.requireDemo) {
     return res.status(201).json({
       status: true,
-      message: "ya has tomado una free class",
+      message: "You have already taken one free class",
       data: {
         demoClass: democlass.requireDemo, // return true
         addData: 0,
@@ -84,7 +84,7 @@ const AddDataUserDemoclass = async (req, res, next) => {
     return res.status(400).json({
       error: true,
       status: false,
-      message: "Require demo ya solicitado",
+      message: "You have already taken one free class",
     });
   }
   const user = await User.findByIdAndUpdate(
@@ -110,7 +110,7 @@ const AddDataUserDemoclass = async (req, res, next) => {
   return res.status(200).json({
     error: false,
     status: true,
-    message: "Add Successfully",
+    message: "We will get in touch to arrange a meeting",
   });
 };
 
@@ -129,7 +129,7 @@ const AddDataUserOneData = async (req, res, next) => {
     return res.status(400).json({
       status: false,
       error: true,
-      message: "Ya has requerido una demoo class",
+      message: "You have already taken one free class",
     });
   const data = await User.findByIdAndUpdate(
     { _id: id },
@@ -152,7 +152,7 @@ const AddDataUserOneData = async (req, res, next) => {
   return res.status(200).json({
     error: false,
     status: true,
-    message: "Data add Success",
+    message: "We will get in touch to arrange a meeting",
   });
 };
 module.exports = {
