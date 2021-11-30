@@ -88,11 +88,12 @@ module.exports = {
 
   QueryCourseforIdiom: async (req, res, next) => {
     // const { id } = req.params;
-    const { idiom } = req.query;
-    if (!idiom)
+    const { language } = req.query;
+
+    if (!language)
       return res.status(400).json({ status: false, message: "Bad Request" });
     try {
-      const Query = await Courses.findOne({ nameCourse: idiom }).populate(
+      const Query = await Courses.findOne({ nameCourse: language }).populate(
         "teachers"
       );
       if (!Query)
@@ -116,6 +117,7 @@ module.exports = {
         });
         return res.status(200).json({
           success: true,
+          idiom: language,
           datos,
         });
       }
