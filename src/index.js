@@ -123,6 +123,7 @@ app.use(require("./routes/paypal"));
 app.use(require("./routes/temary"));
 app.use(require("./routes/summay"));
 app.use(require("./routes/verifyData"));
+app.use("/feedback", require("./routes/feedback"));
 // static folder
 app.use(express.static(path.join(__dirname, "public")));
 

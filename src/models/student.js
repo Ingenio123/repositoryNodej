@@ -68,19 +68,19 @@ const studentSchema = new Schema(
           type: Boolean,
           default: false,
         },
-        lessonsTotal: {
+        lesson: {
           type: String,
           default: 0,
         },
-        lessonsRestantes: {
+        lesson: {
           type: String,
           default: 0,
         },
-        NumberMonths: {
+        months: {
           type: String,
           default: 1,
         },
-        TimeLossons: {
+        time: {
           type: String,
         },
         idiom: {

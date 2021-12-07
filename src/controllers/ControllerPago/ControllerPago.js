@@ -49,8 +49,7 @@ const UpdateStudent = async (dataStudent, userData) => {
   const { _id, email } = userData;
   console.log(dataStudent, "Datos del User", userData);
   const resCache = await DatosCache(_id);
-
-  // console.log(resCache.dataCourse);
+  console.log("dataos cache", resCache);
   // resCache.dataCourse;
 
   const Studentes = await Student.findOneAndUpdate(
