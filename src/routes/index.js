@@ -175,6 +175,8 @@ router.post(
   teacherReview
 );
 
+router.post("/data/user/updateImage/:id", userController.UpdateImageProfile);
+
 // create Student
 
 // router.post('/data/createStudent',verifyToken,createOneStudent)

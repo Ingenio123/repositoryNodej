@@ -1,7 +1,7 @@
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 const Role = require("../models/roles");
-
+const { uploader } = require("cloudinary").v2;
 const registerUser = async (req, res) => {
   const {
     FirstName,
@@ -66,7 +66,7 @@ const registerUser = async (req, res) => {
   });
 };
 
-const signInUser = async (req, res, next) => {
+const signInUser = async (req, res) => {
   const { email, password } = req.body;
   console.log(req.body);
   const user = await User.findOne({ email }).populate("roles");
@@ -96,7 +96,7 @@ const signInUser = async (req, res, next) => {
   });
 };
 
-const UserConRoles = async (req, res, next) => {
+const UserConRoles = async (req, res) => {
   const { username, email, password, roles } = req.body;
 
   const user = await User.findOne({ email }).select("-password");
@@ -129,7 +129,7 @@ const UserConRoles = async (req, res, next) => {
   });
 };
 
-const UserId = async (req, res, next) => {
+const UserId = async (req, res) => {
   const { _id } = req.params;
   if (_id !== req.id)
     return res
@@ -147,6 +147,46 @@ const UserId = async (req, res, next) => {
   });
 };
 
+const UpdateImageProfile = async (req, res) => {
+  console.log(req.params);
+  const { id } = req.params;
+  if (req.files === null) {
+    return res.status(400).json({ msg: "No file uploaded" });
+  }
+  const { file } = req.files;
+  if (!file) {
+    return res.status(400).json({
+      error: true,
+      message: "Error img not found",
+    });
+  }
+  try {
+    const imageUpdate = await uploader.upload(file.tempFilePath);
+    console.log(imageUpdate);
+    const { secure_url, public_id } = imageUpdate;
+    await User.findByIdAndUpdate(
+      id,
+      {
+        picture: secure_url,
+      },
+      {
+        useFindAndModify: false,
+      }
+    );
+    return res.status(200).json({
+      error: false,
+      message: "todo bien amigo",
+      img: secure_url,
+    });
+  } catch (error) {
+    console.log(Error);
+    return res.status(400).json({
+      error: true,
+      message: "todo bien amigo",
+    });
+  }
+};
+
 // const VerificacionRoles =  async (req,res)=>{
 // }
 
@@ -155,5 +195,6 @@ module.exports = {
   signInUser,
   UserId,
   UserConRoles,
+  UpdateImageProfile,
   // VerificacionRoles,
 };
