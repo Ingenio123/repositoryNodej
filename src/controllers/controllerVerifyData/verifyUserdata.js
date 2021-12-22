@@ -1,4 +1,5 @@
 const User = require("../../models/user");
+const { transporter } = require("../../patterns/NodemailerAdapter");
 
 const VerfyUserData = async (req, res) => {
   const { id } = req.params;
@@ -107,6 +108,12 @@ const AddDataUserDemoclass = async (req, res, next) => {
       status: false,
       message: "Erro to server",
     });
+  transporter.sendMail({
+    from: "",
+    to: "",
+    text: "",
+  });
+
   return res.status(200).json({
     error: false,
     status: true,

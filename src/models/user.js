@@ -37,6 +37,9 @@ const userSchema = new Schema(
       default:
         "https://res.cloudinary.com/ingenio/image/upload/v1623097143/avatar_eyqooo.png",
     },
+    publicId: {
+      type: String,
+    },
     curses: [
       {
         type: Schema.Types.ObjectId,

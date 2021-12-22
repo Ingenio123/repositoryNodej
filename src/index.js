@@ -10,6 +10,7 @@ const clouddinary = require("cloudinary").v2;
 const { createRoles } = require("./libs/initialSetup");
 const db = require("./connectDB");
 const cors = require("cors");
+require("dotenv").config();
 
 const app = express();
 

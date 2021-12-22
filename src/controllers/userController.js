@@ -2,6 +2,9 @@ const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 const Role = require("../models/roles");
 const { uploader } = require("cloudinary").v2;
+const { remove } = require("fs-extra");
+const path = require("path");
+const SingletonDelete = require("../patterns/DeleteSingleton");
 const registerUser = async (req, res) => {
   const {
     FirstName,
@@ -150,9 +153,12 @@ const UserId = async (req, res) => {
 const UpdateImageProfile = async (req, res) => {
   console.log(req.params);
   const { id } = req.params;
+  //
   if (req.files === null) {
     return res.status(400).json({ msg: "No file uploaded" });
   }
+  //
+
   const { file } = req.files;
   if (!file) {
     return res.status(400).json({
@@ -161,25 +167,31 @@ const UpdateImageProfile = async (req, res) => {
     });
   }
   try {
+    const user = await User.findById(id);
+
+    await uploader.destroy(user.publicId);
     const imageUpdate = await uploader.upload(file.tempFilePath);
-    console.log(imageUpdate);
+    new SingletonDelete();
+
+    // await remove(path.resolve("./tmp"));
     const { secure_url, public_id } = imageUpdate;
     await User.findByIdAndUpdate(
       id,
       {
         picture: secure_url,
+        publicId: public_id,
       },
       {
         useFindAndModify: false,
       }
     );
+
     return res.status(200).json({
       error: false,
       message: "todo bien amigo",
       img: secure_url,
     });
   } catch (error) {
-    console.log(Error);
     return res.status(400).json({
       error: true,
       message: "todo bien amigo",
