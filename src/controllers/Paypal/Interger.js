@@ -12,17 +12,17 @@ const {
  * CREDENTIAL SANDBOX
  */
 const CLIENT =
-  "AVyZDnugXSDNCiWSUc-8bJlK8oT_l0--7KKquM8_dODYZ2_kShQ7FWSbvEi9ZgxQodHHXhZBE_10ZX6l"; // ingenio paypal
+  "ATX86WmE3S9EsBsWVzrlL--Tz-hiu8yAEYHu6g3wBPaynpMrTzn_v4mwD-Z1lKvaN8Ql7Bh0Oe0cSnaX";
 const SECRET =
-  "ELtmvEHB8kMwL_fnwJl1r79G3IcRVC6gk8FPlhpbdvN5nzi1aokhI8533YdUy50IiugvqYbNXLyfml4Y";
-const PAYPAL_API = "https://api-m.sandbox.paypal.com"; // Live https://api-m.paypal.com - sandbox https://api-m.sandbox.paypal.com
+  "EGk--ynC5_s1yZ09-HfD7n9roO0f-2-RdKVX4CJV4GRBLUf9xlGy8D6Clg8TzwkbGZJhnCTq-1_bqh6O";
+const PAYPAL_API = "https://api-m.paypal.com"; // Live https://api-m.paypal.com - sandbox https://api-m.sandbox.paypal.com
 
 const auth = { user: CLIENT, pass: SECRET };
-const UrlClient = "http://localhost:3000"; // Live  https://www.ingeniolanguages.com
+const UrlClient = "https://www.ingeniolanguages.com"; // Live  https://www.ingeniolanguages.com  / sandbox http://localhost:3000
 
 // paypal configure
 paypal.configure({
-  mode: "sandbox", //'sandbox' or 'live'
+  mode: "live", //'sandbox' or 'live'
   client_id: CLIENT,
   client_secret: SECRET,
 });
