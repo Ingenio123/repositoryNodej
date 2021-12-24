@@ -65,7 +65,7 @@ const userSchema = new Schema(
       type: String,
     },
     democlass: {
-      classDemo: { type: Boolean, defaul: false },
+      classDemo: { type: Boolean, default: false },
       requireDemo: { type: Boolean, default: false },
       nameTeacherDemo: { type: String },
     },

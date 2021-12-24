@@ -6,7 +6,7 @@ const conect_db = async () => {
   const MONGO_PORT = "27017";
   const MONGO_DB = "IngenioApi";
 
-  //       `mongodb://admin:admin123@167.99.145.171:27017/HomePage?authSource=admin`,
+  //`mongodb://admin:admin123@167.99.145.171:27017/HomePage?authSource=admin`,
   try {
     mongoose
       .connect(

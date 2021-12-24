@@ -49,10 +49,11 @@ const UpdateStudent = async (dataStudent, userData) => {
   const { _id, email } = userData;
   console.log(dataStudent, "Datos del User", userData);
   const resCache = await DatosCache(_id);
+
   console.log("dataos cache", resCache);
   // resCache.dataCourse;
 
-  const Studentes = await Student.findOneAndUpdate(
+  await Student.findOneAndUpdate(
     { email: email },
     {
       $push: {
@@ -65,6 +66,8 @@ const UpdateStudent = async (dataStudent, userData) => {
       useFindAndModify: false,
     }
   );
+
+  await DeleteCache(resCache.idCache);
 };
 
 const StructItemsCompra = async (itemsArray, Email) => {
@@ -106,19 +109,23 @@ const CreateNewStudent = async (user) => {
   const newStudent = new Student({
     email,
   });
-
+  //   -------------------  Data cache course ------------------------ //
   for (var i = 0; i < resCache.dataCourse.length; i++) {
     newStudent.courses.push({
-      lessonsTotal: resCache.dataCourse[i].lesson.split(" ")[0],
-      lessonsRestantes: resCache.dataCourse[i].lesson.split(" ")[0],
-      TimeLossons: resCache.dataCourse[i].time,
+      lessonTotal: resCache.dataCourse[i].lesson.split(" ")[0],
+      lesson: resCache.dataCourse[i].lesson.split(" ")[0],
+      time: resCache.dataCourse[i].time,
       idiom: resCache.dataCourse[i].idiom,
+      months: resCache.dataCourse[i].months,
     });
   }
   // console.log(newStudent);
   //
   //
   const resdatos = await newStudent.save();
+
+  await DeleteCache(resCache.idCache);
+
   return {
     success: true,
     resdatos,
@@ -128,11 +135,11 @@ const CreateNewStudent = async (user) => {
 // #####################################################################
 const DatosCache = async (idUser) => {
   const DatosCache = await CacheCompra.findOne({ idUser: idUser });
-  const { dataCourse } = DatosCache;
-
+  const { dataCourse, _id } = DatosCache;
   return {
     success: true,
     dataCourse,
+    idCache: _id,
   };
 };
 // ###########################################################################
@@ -143,6 +150,76 @@ const DeleteCache = async (idCache) => {
   return { success: true };
 };
 
+//  -------------  Add course  ------------------------------------- //
+/**
+ *  se pasa por parametro email
+ * @param {string} email
+ * @returns
+ */
+const addCourse = async (email) => {
+  const userData = await User.findOne({ email });
+  const verify = await VerifySiExisteELStudent(userData.email);
+  if (verify.success) {
+    await UpdateStudent(verify.student, userData);
+    console.log("Student Existe");
+    return true;
+  }
+  const newStudent = await CreateNewStudent(userData);
+  console.log("Nuevo Student", newStudent);
+
+  // const fetching = async () => {
+  //   const UserData = await User.findOne({ email });
+  //   console.log("estamos con el estudiante", UserData);
+  //   const resultRole = await Role.findOne({ name: "student" });
+  //   const existeRol = UserData.roles.includes(resultRole._id);
+  //   const { FirstName } = UserData;
+  //   const EmailUser = UserData.email;
+  //   if (existeRol === false) {
+  //     await User.findByIdAndUpdate(
+  //       UserData._id,
+  //       {
+  //         $push: { roles: resultRole._id },
+  //       },
+  //       {
+  //         useFindAndModify: false,
+  //       }
+  //     );
+  //   }
+  //   //paramas (id -> id del user, dataCourse ->  datos de los cursos)
+  //   // addDataCache()
+  //   const { _id } = UserData;
+  //   // var CourseQuery = await Course.findOne({ nameCourse: url });
+  //   const DataUser = await Cache.findOne({
+  //     idUser: _id,
+  //   });
+  //   const DataAsync = DataUser.dataCourse.map(async (item) => {
+  //     item.items[0].map(async (iterador) => {
+  //       console.log(
+  //         "los datos del iterador",
+  //         iterador.lesson,
+  //         iterador.time,
+  //         iterador.months,
+  //         iterador.idiom
+  //       );
+  //       const lesson = iterador.lesson.split(" ")[0];
+  //       const time = iterador.time.split(" ")[0];
+  //       // const StudentFound = await Student.findOne({ email: item.email });
+  //       // console.log(StudentFound);
+  //       const UpdateStudent = SaveNewStudent(
+  //         item.email,
+  //         lesson,
+  //         time,
+  //         iterador.months,
+  //         iterador.idiom
+  //       );
+  //       return UpdateStudent;
+  //     });
+  //   });
+  //   await Promise.all(DataAsync);
+  // };
+  // fetching();
+};
+
 module.exports = {
   StructItemsCompra,
   CreateNewStudent,
@@ -150,4 +227,5 @@ module.exports = {
   VerifySiExisteELStudent,
   UpdateStudent,
   NewCache,
+  addCourse,
 };

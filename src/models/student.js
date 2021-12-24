@@ -68,7 +68,7 @@ const studentSchema = new Schema(
           type: Boolean,
           default: false,
         },
-        lesson: {
+        lessonTotal: {
           type: String,
           default: 0,
         },

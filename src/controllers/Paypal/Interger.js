@@ -1,20 +1,24 @@
 const request = require("request");
 const axios = require("axios");
-
 const paypal = require("paypal-rest-sdk");
+const {
+  addCourse,
+  NewCache,
+  DeleteCache,
+} = require("../ControllerPago/ControllerPago");
 
 // const Paypal = require("../../models/Paypal/Paypal");
 /**
  * CREDENTIAL SANDBOX
  */
 const CLIENT =
-  "AVTaPb97PqAdfy6BQd72KT-B-y51BX1PvU82D37cPq2KV41QYfdao8QvihJc0CrfJMfmqmTwKRKrZtQh";
+  "AVyZDnugXSDNCiWSUc-8bJlK8oT_l0--7KKquM8_dODYZ2_kShQ7FWSbvEi9ZgxQodHHXhZBE_10ZX6l"; // ingenio paypal
 const SECRET =
-  "EKdwsXkfacG2uKiSNGo5emCnMxyjJcSPmoEA3wYFK0wU7a98ljmgI097dNtjtK-uDWq-yMF3422GMUyJ";
-const PAYPAL_API = "https://api-m.paypal.com"; // Live https://api-m.paypal.com
+  "ELtmvEHB8kMwL_fnwJl1r79G3IcRVC6gk8FPlhpbdvN5nzi1aokhI8533YdUy50IiugvqYbNXLyfml4Y";
+const PAYPAL_API = "https://api-m.sandbox.paypal.com"; // Live https://api-m.paypal.com - sandbox https://api-m.sandbox.paypal.com
 
 const auth = { user: CLIENT, pass: SECRET };
-const UrlClient = "http://localhost:3000";
+const UrlClient = "http://localhost:3000"; // Live  https://www.ingeniolanguages.com
 
 // paypal configure
 paypal.configure({
@@ -25,9 +29,15 @@ paypal.configure({
 //end configure paypal
 
 const CreatePayment = async (req, res) => {
+  const _id = req.id;
+  console.log("este es el ID: ", _id);
+  //  create new data cache
+
   const { datosArray, priceTotal } = req.body;
-  console.log(datosArray, priceTotal);
-  console.log(DestructArray(datosArray));
+  // _id  del usuario y items de la compra //
+  await NewCache(_id, datosArray);
+  // console.log(datosArray, priceTotal);
+  // console.log(DestructArray(datosArray));
   var create_payment_json = {
     intent: "SALE",
     payer: {
@@ -36,7 +46,7 @@ const CreatePayment = async (req, res) => {
 
     redirect_urls: {
       return_url: UrlClient + "/redirect",
-      cancel_url: UrlClient + "/paypal/cancel/",
+      cancel_url: UrlClient + "/paypal/cancel",
     },
     transactions: [
       {
@@ -88,11 +98,10 @@ const CreatePayment = async (req, res) => {
   // ###################################################################################################################################### //
 
   // create payment
-
+  //  create_payment_json
   paypal.payment.create(create_payment_json, function (err, payment) {
     if (err) {
-      throw err;
-      return res.status(400).json({ status: false, message: "Error " });
+      return res.status(400).json({ status: false, message: "Error" });
     } else {
       for (let i = 0; i < payment.links.length; i++) {
         if (payment.links[i].rel === "approval_url") {

@@ -79,46 +79,56 @@ const AddDataUserDemoclass = async (req, res, next) => {
       status: false,
       message: "Data not found",
     });
-
-  const user2 = await User.findById(id);
-  if (user2.democlass.requireDemo) {
-    return res.status(400).json({
-      error: true,
-      status: false,
-      message: "You have already taken one free class",
-    });
-  }
-  const user = await User.findByIdAndUpdate(
-    { _id: id },
-    {
-      democlass: {
-        requireDemo: true,
-      },
-      Gender,
-      numberCell: Phone,
-      Country,
-    },
-    {
-      useFindAndModify: false,
+  try {
+    const user2 = await User.findById(id);
+    if (user2.democlass.requireDemo) {
+      return res.status(400).json({
+        error: true,
+        status: false,
+        message: "You have already taken one free class",
+      });
     }
-  );
-  if (!user)
+    const user = await User.findByIdAndUpdate(
+      { _id: id },
+      {
+        democlass: {
+          requireDemo: true,
+        },
+        Gender,
+        numberCell: Phone,
+        Country,
+      },
+      {
+        useFindAndModify: false,
+      }
+    );
+    if (!user)
+      return res.status(500).json({
+        error: true,
+        status: false,
+        message: "Erro to server",
+      });
+
+    await transporter.sendMail({
+      from: "Luis Zapata 😎 <jlzyjose@gmail.com>",
+      to: "ingenioecuador.plus@gmail.com",
+      subject: "Hello ✔",
+      text: "esto es una prueba desde ingenio languages",
+      html: "<b>Hello world?</b>", // html body
+    });
+
+    return res.status(200).json({
+      error: false,
+      status: true,
+      message: "We will get in touch to arrange a meeting",
+    });
+  } catch (_error) {
+    console.error(_error);
     return res.status(500).json({
       error: true,
-      status: false,
-      message: "Erro to server",
+      message: "Erro in server",
     });
-  transporter.sendMail({
-    from: "",
-    to: "",
-    text: "",
-  });
-
-  return res.status(200).json({
-    error: false,
-    status: true,
-    message: "We will get in touch to arrange a meeting",
-  });
+  }
 };
 
 const AddDataUserOneData = async (req, res, next) => {
@@ -156,6 +166,7 @@ const AddDataUserOneData = async (req, res, next) => {
       error: true,
       message: "User not found",
     });
+
   return res.status(200).json({
     error: false,
     status: true,
