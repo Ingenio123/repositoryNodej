@@ -1,8 +1,6 @@
 const jwt = require("jsonwebtoken");
 const { OAuth2Client } = require("google-auth-library");
-const client = new OAuth2Client(
-  "669011089415-8gtepgk9pivth0itvut5tom96kn9r7i1.apps.googleusercontent.com"
-);
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT);
 const User = require("../models/user");
 const Role = require("../models/roles");
 
@@ -12,8 +10,7 @@ const GoogleAuth = async (req, res) => {
   try {
     const result = await client.verifyIdToken({
       idToken,
-      audience:
-        "669011089415-8gtepgk9pivth0itvut5tom96kn9r7i1.apps.googleusercontent.com",
+      audience: process.env.GOOGLE_CLIENT,
     });
     const { email_verified, email, picture } = result.payload;
 
