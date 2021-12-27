@@ -8,7 +8,7 @@ const Role = require("../models/roles");
 
 const GoogleAuth = async (req, res) => {
   const { idToken } = req.body;
-  console.log(idToken)
+  console.log(idToken);
   try {
     const result = await client.verifyIdToken({
       idToken,
@@ -23,7 +23,7 @@ const GoogleAuth = async (req, res) => {
         .populate("roles");
 
       if (user) {
-        const token = jwt.sign({ id: user._id }, "secret", {
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
           expiresIn: "1d",
         });
 
@@ -56,7 +56,7 @@ const GoogleAuth = async (req, res) => {
             });
           }
 
-          const token = jwt.sign({ id: data._id }, "secret", {
+          const token = jwt.sign({ id: data._id }, process.env.JWT_SECRET, {
             expiresIn: "1d",
           });
           const resultado = await User.findById(data._id).populate("roles");

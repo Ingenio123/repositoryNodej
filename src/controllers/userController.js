@@ -72,6 +72,7 @@ const registerUser = async (req, res) => {
 
 const signInUser = async (req, res) => {
   const { email, password } = req.body;
+
   const user = await User.findOne({ email }).populate("roles");
 
   if (!user)
