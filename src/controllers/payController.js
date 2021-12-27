@@ -110,9 +110,7 @@ const SendDatafast = async (
   const VALOR_PRODUCTO = parseInt(SumaPrices);
   const VALOR_IVA = addIva(VALOR_PRODUCTO, 12);
 
-  // const entityId = "8ac7a4c87a1e95a8017a1fd6acae073c"; //ENTITI ID  DE PRUEBA
-
-  const entityId = "8ac9a4cb7aa3ea13017ab0abd88775d3"; //ENTITI ID REAL
+  const entityId = process.env.DATAFAST_ENTITYID;
 
   // #######################################
   var valores = DestructArray(items);
@@ -129,13 +127,7 @@ const SendDatafast = async (
   //URL REAL  LA QUE ESTA AQUI ABAJO
   const url = `https://oppwa.com/v1/checkouts?entityId=${entityId}&amount=${amount}&currency=USD&paymentType=DB&customer.givenName=${firstName}&customer.middleName=${SecondName}&customer.surname=${surname}&customer.ip=${ipClient}&customer.merchantCustomerId=${idClient}&merchantTransactionId=transaction_112233&customer.email=${email}&customer.identificationDocType=IDCARD&customer.identificationDocId=${number_Cedula}&customer.phone=${numberPhone}&billing.street1=${city}&billing.country=${country}&billing.postcode=${CodePostal}&shipping.street1=${city}&shipping.country=${country}&risk.parameters%5BUSER_DATA2%5D=INGENIO&customParameters%5BSHOPPER_MID%5D=4200003938&customParameters%5BSHOPPER_TID%5D=BP374772&customParameters%5BSHOPPER_ECI%5D=0103910&customParameters%5BSHOPPER_PSERV%5D=17913101&customParameters%5BSHOPPER_VAL_BASE0%5D=0&customParameters%5BSHOPPER_VAL_BASEIMP%5D=${VALOR_PRODUCTO}&customParameters%5BSHOPPER_VAL_IVA%5D=${VALOR_IVA}&${valorestotales}&customParameters%5BSHOPPER_VERSIONDF%5D=2`;
 
-  // console.log(url)
-  //   TOKEN DE PRUEBAS
-  //   OGE4Mjk0MTg1YTY1YmY1ZTAxNWE2YzhjNzI4YzBkOTV8YmZxR3F3UTMyWA==
-
-  // TOKEN REAL
-  //   OGFjOWE0Y2I3YWEzZWExMzAxN2FiMGE5Y2ViZjc1YTh8aHN5RzlrSmtBbQ==
-  const token = "OGFjOWE0Y2I3YWEzZWExMzAxN2FiMGE5Y2ViZjc1YTh8aHN5RzlrSmtBbQ==";
+  const token = process.env.DATAFAST_TOKEN;
   try {
     let resultados = await axios.post(url, data, {
       httpsAgent: agent,
@@ -172,25 +164,13 @@ const DestructArray = (arrayData) => {
 
 const datafastResultEnd = async (req, res, next) => {
   const { id } = req.params;
-  console.log(req.body);
-
-  console.log(id);
-  //   return res.status(200).json({
-  //     success: true,
-  //     message: "Successfully peticion",
-  //   });
-  // const entityId = "8ac7a4c87a1e95a8017a1fd6acae073c"; //prueba
-  const entityId = "8ac9a4cb7aa3ea13017ab0abd88775d3"; //real
+  const entityId = process.env.DATAFAST_ENTITYID; //real
   data = {};
 
   // const url = `https://test.oppwa.com/v1/checkouts/${id}/payment?entityId=${entityId}`;
   const url = `https://oppwa.com/v1/checkouts/${id}/payment?entityId=${entityId}`;
-  console.log(url);
-  //   TOKEN DE PRUEBAS
-  //   OGE4Mjk0MTg1YTY1YmY1ZTAxNWE2YzhjNzI4YzBkOTV8YmZxR3F3UTMyWA==
-  //   TOKEN REAL
-  //   OGFjOWE0Y2I3YWEzZWExMzAxN2FiMGE5Y2ViZjc1YTh8aHN5RzlrSmtBbQ==
-  const token = "OGFjOWE0Y2I3YWEzZWExMzAxN2FiMGE5Y2ViZjc1YTh8aHN5RzlrSmtBbQ==";
+
+  const token = process.env.DATAFAST_TOKEN;
   try {
     axios
       .get(url, {
@@ -256,8 +236,6 @@ const SaveNewStudent = async (email, lesson, time, months, idiom) => {
 
 const SaveDataStudent = async (email, lesson, time, months, idiom) => {
   const StudentFound = await Student.findOne({ email });
-  console.log(StudentFound);
-  console.log(idiom);
   const course = await Course.findOne({ nameCourse: idiom });
 
   const result = await Student.findOneAndUpdate(

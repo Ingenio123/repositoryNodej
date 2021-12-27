@@ -1,53 +1,59 @@
 const mongoose = require("mongoose");
 const conect_db = async () => {
-  const MONGO_USERNAME = "admin";
-  const MONGO_PASSWORD = "admin123";
-  const MONGO_HOSTNAME = "167.99.145.171";
-  const MONGO_PORT = "27017";
-  const MONGO_DB = "IngenioApi";
-
-  //`mongodb://admin:admin123@167.99.145.171:27017/HomePage?authSource=admin`,
-  try {
-    mongoose
-      .connect(
-        `mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOSTNAME}:${MONGO_PORT}/${MONGO_DB}?authSource=admin`,
-        {
+  if (process.env.APP_ENV !== "production") {
+    try {
+      mongoose
+        .connect("mongodb://localhost/ingenio_app_Lenguages", {
           useNewUrlParser: true,
-        }
-      )
-      .then((db) => console.log(`conectado con exito `))
-      .catch((err) => console.log(err));
-  } catch (err) {
-    console.log(err);
+          useUnifiedTopology: true,
+        })
+        .then((db) => console.log(`conectado con exito serve local `))
+        .catch((err) => console.log(err));
+    } catch (err) {
+      console.log(err);
+    }
+  } else {
+    try {
+      mongoose
+        .connect(
+          `mongodb://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_HOSTNAME}:${process.env.MONGO_PORT}/${process.env.MONGO_DB}?authSource=admin`,
+          {
+            useNewUrlParser: true,
+          }
+        )
+        .then((db) => {
+          console.log(`conectado con exito to server`);
+        })
+        .catch((err) => console.log(err));
+    } catch (err) {
+      console.log(err);
+    }
   }
-  // mongodb://admin:admin123@167.99.145.171:27017/IngenioApi?authSource=admin
+  // try {
+  //   mongoose
+  //     .connect(
+  //       `mongodb://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_HOSTNAME}:${process.env.MONGO_PORT}/${process.env.MONGO_DB}?authSource=admin`,
+  //       {
+  //         useNewUrlParser: true,
+  //       }
+  //     )
+  //     .then((db) => {
+  //       console.log(`conectado con exito to server`);
+  //     })
+  //     .catch((err) => console.log(err));
+  // } catch (err) {
+  //   console.log(err);
+  // }
   // try {
   //   mongoose
   //     .connect("mongodb://localhost/ingenio_app_Lenguages", {
   //       useNewUrlParser: true,
   //       useUnifiedTopology: true,
   //     })
-  //     .then((db) => console.log(`conectado con exito `))
+  //     .then((db) => console.log(`conectado con exito serve local `))
   //     .catch((err) => console.log(err));
   // } catch (err) {
   //   console.log(err);
-  // }
-
-  // const MONGO_USERNAME = 'admin';
-  // const MONGO_PASSWORD = "admin123";
-  // const MONGO_HOSTNAME = '127.0.0.1';
-  // const MONGO_PORT = '27017';
-  // const MONGO_DB = 'IngenioApi';
-
-  // try {
-  //      mongoose.connect(`mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOSTNAME}:${MONGO_PORT}/${MONGO_DB}?authSource=admin`,{
-  //         useNewUrlParser: true
-  //     })
-  //         .then(db =>  console.log(`conectado con exito `))
-  //         .catch(err =>  console.log('hubo un error', err))
-
-  // }catch(err){
-  //     console.log(err)
   // }
 };
 module.exports = {

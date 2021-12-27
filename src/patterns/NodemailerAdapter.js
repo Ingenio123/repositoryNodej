@@ -5,12 +5,14 @@ const transporter = nodemailer.createTransport({
   port: 465,
   secure: true, // tru for port 465  false for other ports
   auth: {
-    user: "jlzyjose@gmail.com",
-    pass: "ywitwhgcdldamjmj",
+    user: process.env.GOOGELE_USER,
+    pass: process.env.GOOGLE_PASSWORD,
   },
 });
 
-transporter.verify().then((res) => console.log("Ready for send emails"));
+transporter.verify().then((res) => {
+  console.log("Ready for send emails");
+});
 
 module.exports = {
   transporter,

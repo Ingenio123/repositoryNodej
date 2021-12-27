@@ -11,18 +11,17 @@ const {
 /**
  * CREDENTIAL SANDBOX
  */
-const CLIENT =
-  "ATX86WmE3S9EsBsWVzrlL--Tz-hiu8yAEYHu6g3wBPaynpMrTzn_v4mwD-Z1lKvaN8Ql7Bh0Oe0cSnaX";
-const SECRET =
-  "EGk--ynC5_s1yZ09-HfD7n9roO0f-2-RdKVX4CJV4GRBLUf9xlGy8D6Clg8TzwkbGZJhnCTq-1_bqh6O";
+const CLIENT = process.env.PAYPAL_CLIENT;
+const SECRET = process.env.PAYPAL_SECRET;
+const MODE = process.env.PAYPAL_MODE;
 const PAYPAL_API = "https://api-m.paypal.com"; // Live https://api-m.paypal.com - sandbox https://api-m.sandbox.paypal.com
 
 const auth = { user: CLIENT, pass: SECRET };
-const UrlClient = "https://www.ingeniolanguages.com"; // Live  https://www.ingeniolanguages.com  / sandbox http://localhost:3000
+const UrlClient = process.env.URL_CLIENT; // Live  https://www.ingeniolanguages.com  / sandbox http://localhost:3000
 
 // paypal configure
 paypal.configure({
-  mode: "live", //'sandbox' or 'live'
+  mode: MODE, //'sandbox' or 'live'
   client_id: CLIENT,
   client_secret: SECRET,
 });
@@ -30,7 +29,7 @@ paypal.configure({
 
 const CreatePayment = async (req, res) => {
   const _id = req.id;
-  console.log("este es el ID: ", _id);
+
   //  create new data cache
 
   const { datosArray, priceTotal } = req.body;

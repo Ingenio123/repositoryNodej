@@ -30,7 +30,7 @@ exports.verifyToken = async (req, res, next) => {
     return res
       .status(401)
       .json({ success: false, message: "token  not fund " });
-  const decode = jwt.verify(token, "secret");
+  const decode = jwt.verify(token, process.env.JWT_SECRET);
   req.id = decode.id;
 
   next();

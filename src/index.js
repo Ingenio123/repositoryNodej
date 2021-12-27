@@ -13,7 +13,6 @@ const cors = require("cors");
 require("dotenv").config();
 
 const app = express();
-
 db.conect_db();
 
 createRoles();
@@ -25,12 +24,13 @@ function isLoggedIn(req, res, next) {
 
 // settings
 app.set("port", process.env.PORT || 4000);
+
 app.set("views", path.join(__dirname, "views"));
 
 clouddinary.config({
-  cloud_name: "ingenio",
-  api_key: "492153353896491",
-  api_secret: "cgRWmJWyjDxw8AXpcCNWE7e6yb0",
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.API_KEY_CLOUDDINARY,
+  api_secret: process.env.API_SECRET_CLOUDDINARY,
 });
 // middlewares
 app.use(cors());

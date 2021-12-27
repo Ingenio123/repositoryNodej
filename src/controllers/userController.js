@@ -3,7 +3,6 @@ const jwt = require("jsonwebtoken");
 const Role = require("../models/roles");
 const { uploader } = require("cloudinary").v2;
 const { remove } = require("fs-extra");
-const path = require("path");
 const SingletonDelete = require("../patterns/DeleteSingleton");
 const registerUser = async (req, res) => {
   const {
@@ -52,7 +51,9 @@ const registerUser = async (req, res) => {
   const userRol = await User.findById(userCreated._id).populate("roles");
 
   const userData = { id: userCreated._id };
-  const token = await jwt.sign(userData, "secret", { expiresIn: 60 * 60 * 24 });
+  const token = await jwt.sign(userData, process.env.JWT_SECRET, {
+    expiresIn: 60 * 60 * 24,
+  });
 
   if (userCreated) {
     const { _id, email, picture } = userCreated;
@@ -71,7 +72,6 @@ const registerUser = async (req, res) => {
 
 const signInUser = async (req, res) => {
   const { email, password } = req.body;
-  console.log(req.body);
   const user = await User.findOne({ email }).populate("roles");
 
   if (!user)
@@ -89,7 +89,9 @@ const signInUser = async (req, res) => {
 
   const userData = { id: user._id, email: user.email };
 
-  const token = await jwt.sign(userData, "secret", { expiresIn: 60 * 60 * 24 });
+  const token = await jwt.sign(userData, process.env.JWT_SECRET, {
+    expiresIn: 60 * 60 * 24,
+  });
   const { name } = user.roles.pop();
   const { picture, _id, username } = user;
   res.header("auth-token", token).json({
