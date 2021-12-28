@@ -55,16 +55,21 @@ const registerUser = async (req, res) => {
     expiresIn: 60 * 60 * 24,
   });
 
+  //refresh token
+  const refresh_token = await jwt.sign(userData, process.env.JWT_REFRESH, {
+    expiresIn: 60 * 60 * 24,
+  });
+
   if (userCreated) {
     const { _id, email, picture } = userCreated;
     const rol = userRol.roles[0].name;
     return res.status(200).json({
       success: true,
-      user: { _id, picture, email, rol, token },
+      user: { _id, picture, email, rol, token, refreshToken: refresh_token },
     });
   }
 
-  return res.status(200).json({
+  return res.status(400).json({
     success: false,
     message: "err SignUp",
   });
@@ -89,16 +94,30 @@ const signInUser = async (req, res) => {
       .json({ success: false, message: "email / password doest not match!" });
 
   const userData = { id: user._id, email: user.email };
-
+  // generate first token
   const token = await jwt.sign(userData, process.env.JWT_SECRET, {
     expiresIn: 60 * 60 * 24,
   });
+
+  //refresh token
+  const refresh_token = await jwt.sign(userData, process.env.JWT_REFRESH, {
+    expiresIn: 60 * 60 * 24,
+  });
+  //
   const { name } = user.roles.pop();
   const { picture, _id, username } = user;
   res.header("auth-token", token).json({
     success: true,
     error: null,
-    user: { _id, picture, rol: name, username, email, token },
+    user: {
+      _id,
+      picture,
+      rol: name,
+      username,
+      email,
+      token,
+      refreshToken: refresh_token,
+    },
   });
 };
 
@@ -202,6 +221,41 @@ const UpdateImageProfile = async (req, res) => {
   }
 };
 
+const RefreshToken = async (req, res) => {
+  const refreshToken = req.headers.refresh;
+  if (!refreshToken) {
+    return res.status(400).json({
+      error: true,
+      message: "something goes wrong",
+    });
+  }
+  const verifyRefresh = jwt.verify(refreshToken, process.env.JWT_REFRESH);
+  console.log(verifyRefresh);
+  const { id } = verifyRefresh;
+
+  try {
+    // generate un new token y ultimo token
+    const user = await User.findById(id);
+    const token = jwt.sign(
+      { id: user._id, email: user.email },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: 60 * 60 * 24,
+      }
+    );
+    return res.status(200).json({
+      error: false,
+      message: "Todo bien",
+      token: token,
+    });
+  } catch (_error) {
+    console.error(_error);
+    return res.status(400).json({
+      error: true,
+    });
+  }
+};
+
 // const VerificacionRoles =  async (req,res)=>{
 // }
 
@@ -211,5 +265,6 @@ module.exports = {
   UserId,
   UserConRoles,
   UpdateImageProfile,
+  RefreshToken,
   // VerificacionRoles,
 };

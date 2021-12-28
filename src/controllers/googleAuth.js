@@ -20,9 +20,19 @@ const GoogleAuth = async (req, res) => {
         .populate("roles");
 
       if (user) {
+        // Generate new token
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-          expiresIn: "1d",
+          expiresIn: 60 * 60 * 24,
         });
+
+        //refresh token
+        const refresh_token = await jwt.sign(
+          { id: user._id },
+          process.env.JWT_REFRESH,
+          {
+            expiresIn: 60 * 60 * 24,
+          }
+        );
 
         const rol = getLastArrItem(user.roles);
         // const rol = user.roles[0].name;
@@ -30,7 +40,15 @@ const GoogleAuth = async (req, res) => {
 
         return res.status(200).json({
           success: true,
-          user: { _id, email, username, picture, rol: rol.name, token },
+          user: {
+            _id,
+            email,
+            username,
+            picture,
+            rol: rol.name,
+            token,
+            refreshToken: refresh_token,
+          },
         });
       } else {
         let password = email + "secret";
@@ -54,15 +72,31 @@ const GoogleAuth = async (req, res) => {
           }
 
           const token = jwt.sign({ id: data._id }, process.env.JWT_SECRET, {
-            expiresIn: "1d",
+            expiresIn: "120",
           });
+          //refresh token
+          const refresh_token = await jwt.sign(
+            { id: data._id },
+            process.env.JWT_REFRESH,
+            {
+              expiresIn: 60 * 60 * 24,
+            }
+          );
           const resultado = await User.findById(data._id).populate("roles");
 
           const rol = resultado.roles[0].name;
           const { _id, email, FirstName, picture } = data;
           return res.json({
             success: true,
-            user: { _id, email, FirstName, picture, rol, token },
+            user: {
+              _id,
+              email,
+              FirstName,
+              picture,
+              rol,
+              token,
+              refreshToken: refresh_token,
+            },
           });
         });
       }

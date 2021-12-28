@@ -51,7 +51,7 @@ const {
 } = require("../controllers/flagsController");
 
 const { GoogleAuth } = require("../controllers/googleAuth");
-const { UserId } = require("../controllers/userController");
+const { UserId, RefreshToken } = require("../controllers/userController");
 
 const {
   ClientPay,
@@ -156,6 +156,7 @@ router.post(
   [validateUserSignIn, userValidation],
   userController.signInUser
 );
+router.post("/data/refreshToken", RefreshToken);
 
 router.post("/data/createTeacher", createOne); //crear un  usuario teacher
 

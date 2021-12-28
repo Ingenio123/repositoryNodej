@@ -2,6 +2,24 @@ const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 const Roles = require("../models/roles");
 
+exports.verifyToken = async (req, res, next) => {
+  const autorization = req.headers["authorization"];
+  const token = autorization.split(" ")[1];
+
+  if (!token)
+    return res.status(401).json({ success: false, message: "token  not fund" });
+  try {
+    const decode = jwt.verify(token, process.env.JWT_SECRET);
+    req.id = decode.id;
+    next();
+  } catch (error) {
+    return res.status(400).json({
+      error: true,
+      expired: true,
+      message: "expired token",
+    });
+  }
+};
 exports.verifyEmail = async (req, res, next) => {
   const userEmail = await User.findOne({ email: req.body.email });
   if (userEmail) {
@@ -19,21 +37,6 @@ exports.verifyAge = (req, res, next) => {
     success: false,
     message: " age not accepted",
   });
-};
-
-exports.verifyToken = async (req, res, next) => {
-  const autorization = req.headers["authorization"];
-
-  const token = autorization.split(" ")[1];
-
-  if (!token)
-    return res
-      .status(401)
-      .json({ success: false, message: "token  not fund " });
-  const decode = jwt.verify(token, process.env.JWT_SECRET);
-  req.id = decode.id;
-
-  next();
 };
 
 exports.verifyIsAdmin = async (req, res, next) => {
