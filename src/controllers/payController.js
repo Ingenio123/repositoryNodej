@@ -30,6 +30,7 @@ const ClientPay = async (req, res, next) => {
     items,
     id,
     email,
+    emailCustom,
   } = req.body;
   console.log(
     City,
@@ -46,9 +47,10 @@ const ClientPay = async (req, res, next) => {
     SumaPrices,
     items,
     id,
-    email
+    email,
+    emailCustom
   );
-  const Userdata = await User.findOne({ email: email });
+  const Userdata = await User.findOne({ email: emailCustom });
   await NewCache(Userdata._id, items);
   // const datosStruct = await StructItemsCompra(items, email, Userdata._id);
   // const DatosStudent = await CreateNewStudent(Userdata);
@@ -72,9 +74,10 @@ const ClientPay = async (req, res, next) => {
     SumaPrices,
     items,
     id,
-    email
+    email,
+    emailCustom
   );
-
+  console.log("resultados: ", resultados);
   return res.status(200).json({
     message: "todo  salio bien tranquilo hombre aatt luis",
     resultados,
@@ -95,7 +98,8 @@ const SendDatafast = async (
   SumaPrices,
   items,
   idClient,
-  email
+  email,
+  emailCustom
 ) => {
   const number_Cedula = parseInt(numberCedula);
   const city = String(City);
@@ -108,13 +112,17 @@ const SendDatafast = async (
   const ipClient = String(ipClientParams);
   const amount = Cobrar;
   const VALOR_PRODUCTO = parseInt(SumaPrices);
+
   const VALOR_IVA = addIva(VALOR_PRODUCTO, 12);
+  console.log("valor iva: ", VALOR_IVA);
 
   const entityId = process.env.DATAFAST_ENTITYID;
-
+  const MID = process.env.DATAFAST_MID;
+  const TID = process.env.DATAFAST_TID;
   // #######################################
   var valores = DestructArray(items);
   const valorestotales = valores.join("&");
+  console.log("valorestotales: ", valorestotales);
   // ######################################
 
   const data = {};
@@ -125,7 +133,7 @@ const SendDatafast = async (
   // const url = `https://test.oppwa.com/v1/checkouts?entityId=${entityId}&amount=${VALOR_PRODUCTO}&currency=USD&paymentType=DB&customer.givenName=${firstName}&customer.middleName=${SecondName}&customer.surname=${surname}&customer.ip=${ipClient}&customer.merchantCustomerId=${idClient}&merchantTransactionId=transaction_112233&customer.email=${email}&customer.identificationDocType=IDCARD&customer.identificationDocId=${number_Cedula}&customer.phone=${numberPhone}&billing.street1=${city}&billing.country=${country}&billing.postcode=${CodePostal}&shipping.street1=${city}&shipping.country=${country}&risk.parameters%5BUSER_DATA2%5D=DATAFAST&customParameters%5BSHOPPER_MID%5D=1000000505&customParameters%5BSHOPPER_TID%5D=PD100406&customParameters%5BSHOPPER_ECI%5D=0103910&customParameters%5BSHOPPER_PSERV%5D=17913101&customParameters%5BSHOPPER_VAL_BASE0%5D=${VALOR_PRODUCTO}&customParameters%5BSHOPPER_VAL_BASEIMP%5D=0&customParameters%5BSHOPPER_VAL_IVA%5D=0&${valorestotales}&customParameters%5BSHOPPER_VERSIONDF%5D=2&testMode=EXTERNAL`;
 
   //URL REAL  LA QUE ESTA AQUI ABAJO
-  const url = `https://oppwa.com/v1/checkouts?entityId=${entityId}&amount=${amount}&currency=USD&paymentType=DB&customer.givenName=${firstName}&customer.middleName=${SecondName}&customer.surname=${surname}&customer.ip=${ipClient}&customer.merchantCustomerId=${idClient}&merchantTransactionId=transaction_112233&customer.email=${email}&customer.identificationDocType=IDCARD&customer.identificationDocId=${number_Cedula}&customer.phone=${numberPhone}&billing.street1=${city}&billing.country=${country}&billing.postcode=${CodePostal}&shipping.street1=${city}&shipping.country=${country}&risk.parameters%5BUSER_DATA2%5D=INGENIO&customParameters%5BSHOPPER_MID%5D=4200003938&customParameters%5BSHOPPER_TID%5D=BP374772&customParameters%5BSHOPPER_ECI%5D=0103910&customParameters%5BSHOPPER_PSERV%5D=17913101&customParameters%5BSHOPPER_VAL_BASE0%5D=0&customParameters%5BSHOPPER_VAL_BASEIMP%5D=${VALOR_PRODUCTO}&customParameters%5BSHOPPER_VAL_IVA%5D=${VALOR_IVA}&${valorestotales}&customParameters%5BSHOPPER_VERSIONDF%5D=2`;
+  const url = `https://oppwa.com/v1/checkouts?entityId=${entityId}&amount=${amount}&currency=USD&paymentType=DB&customer.givenName=${firstName}&customer.middleName=${SecondName}&customer.surname=${surname}&customer.ip=${ipClient}&customer.merchantCustomerId=${idClient}&merchantTransactionId=transaction_112233&customer.email=${email}&customer.identificationDocType=IDCARD&customer.identificationDocId=${number_Cedula}&customer.phone=${numberPhone}&billing.street1=${city}&billing.country=${country}&billing.postcode=${CodePostal}&shipping.street1=${city}&shipping.country=${country}&risk.parameters%5BUSER_DATA2%5D=INGENIO&customParameters%5BSHOPPER_MID%5D=${MID}&customParameters%5BSHOPPER_TID%5D=${TID}&customParameters%5BSHOPPER_ECI%5D=0103910&customParameters%5BSHOPPER_PSERV%5D=17913101&customParameters%5BSHOPPER_VAL_BASE0%5D=0&customParameters%5BSHOPPER_VAL_BASEIMP%5D=${VALOR_PRODUCTO}&customParameters%5BSHOPPER_VAL_IVA%5D=${VALOR_IVA}&${valorestotales}&customParameters%5BSHOPPER_VERSIONDF%5D=2`;
 
   const token = process.env.DATAFAST_TOKEN;
   try {
@@ -165,12 +173,15 @@ const DestructArray = (arrayData) => {
 const datafastResultEnd = async (req, res, next) => {
   const { id } = req.params;
   const entityId = process.env.DATAFAST_ENTITYID; //real
+  console.log(entityId);
+  console.log(id);
   data = {};
 
   // const url = `https://test.oppwa.com/v1/checkouts/${id}/payment?entityId=${entityId}`;
   const url = `https://oppwa.com/v1/checkouts/${id}/payment?entityId=${entityId}`;
-
+  console.log("url two", url);
   const token = process.env.DATAFAST_TOKEN;
+  console.log("token two", token);
   try {
     axios
       .get(url, {
@@ -180,6 +191,7 @@ const datafastResultEnd = async (req, res, next) => {
         },
       })
       .then((resultado) => {
+        console.log(resultado.data.customer.email);
         addCourse(resultado.data.customer.email);
 
         // AddStudent(resultado.data.result.code, resultado.data.customer.email);
@@ -190,6 +202,7 @@ const datafastResultEnd = async (req, res, next) => {
         });
       })
       .catch((err) => {
+        console.log(err.response.data);
         return res.status(400).json({
           success: false,
           message: "no todo salio bien",
