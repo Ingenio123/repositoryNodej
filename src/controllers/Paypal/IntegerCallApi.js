@@ -8,7 +8,7 @@ const auth = {
   user: process.env.PAYPAL_CLIENT,
   pass: process.env.PAYPAL_SECRET,
 };
-const PAYPAL_API = "https://api-m.paypal.com"; // Live https://api-m.paypal.com
+const PAYPAL_API = "https://api-m.sandbox.paypal.com"; // Live https://api-m.paypal.com
 const CreatePayment = async (req, res) => {
   const { datosArray, priceTotal } = req.body;
   const _id = req.id;
@@ -32,32 +32,37 @@ const CreatePayment = async (req, res) => {
     },
   };
 
-  request.post(
-    `${PAYPAL_API}/v2/checkout/orders`,
-    {
-      auth,
-      body,
-      json: true,
-    },
-    (err, response) => {
-      if (err) {
-        return res.status(400).json({
-          error: true,
-          message: "Error",
-        });
-      }
-      for (let i = 0; i < response.body.links.length; i++) {
-        if (response.body.links[i].rel === "approve") {
-          console.log("APROVADO:", response.body.links[i].href);
-          return res.status(201).json({
-            status: "success",
-            link: response.body.links[i].href,
-          });
-        }
-      }
-      //   res.json({ data: response.body });
+  const response = await request.post(`${PAYPAL_API}/v2/checkout/orders`, {
+    auth,
+    body,
+    json: true,
+  });
+  console.log(response.links);
+  for (let i = 0; i < response.links.length; i++) {
+    if (response.links[i].rel === "approve") {
+      console.log("APROVADO:", response.links[i].href);
+      return res.status(201).json({
+        status: "success",
+        link: response.links[i].href,
+      });
     }
-  );
+  }
+
+  // if (err) {
+  //   return res.status(400).json({
+  //     error: true,
+  //     message: "Error",
+  //   });
+  // }
+  // for (let i = 0; i < response.body.links.length; i++) {
+  //   if (response.body.links[i].rel === "approve") {
+  //     console.log("APROVADO:", response.body.links[i].href);
+  //     return res.status(201).json({
+  //       status: "success",
+  //       link: response.body.links[i].href,
+  //     });
+  //   }
+  // }
 };
 
 const executePay = async (req, res) => {
