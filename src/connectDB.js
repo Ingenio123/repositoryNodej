@@ -19,3 +19,19 @@ const conect_db = async () => {
 module.exports = {
   conect_db,
 };
+
+// if (process.env.APP_ENV !== "production") {
+//   try {
+//     mongoose
+//       .connect("mongodb://localhost/ingenio_app_Lenguages", {
+//         useNewUrlParser: true,
+//         useUnifiedTopology: true,
+//       })
+//       .then((db) => console.log(`conectado con exito serve local `))
+//       .catch((err) => console.log(err));
+//   } catch (err) {
+//     console.log(err);
+//   }
+// } else {
+
+// }

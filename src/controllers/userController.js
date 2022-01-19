@@ -83,7 +83,7 @@ const signInUser = async (req, res) => {
   if (!user)
     return res.status(401).json({
       success: false,
-      message: "user not foud, whit the given  email! ",
+      message: "user not foud, whit the given  email!",
     });
 
   const isMatch = await user.comparePassword(password);
@@ -106,7 +106,7 @@ const signInUser = async (req, res) => {
   //
   const { name } = user.roles.pop();
   const { picture, _id, username } = user;
-  res.header("auth-token", token).json({
+  return res.header("auth-token", token).json({
     success: true,
     error: null,
     user: {

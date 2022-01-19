@@ -11,6 +11,7 @@ const {
   addFlagtoTeachers,
   teacherReview,
   addCalendarTeacher,
+  deleteTeacher,
 } = require("../controllers/teachersController");
 
 const {
@@ -156,6 +157,10 @@ router.post(
   [validateUserSignIn, userValidation],
   userController.signInUser
 );
+
+//
+// router.post("/data/userSignInAdmin",[],);
+//
 router.post("/data/refreshToken", RefreshToken);
 
 router.post("/data/createTeacher", createOne); //crear un  usuario teacher
@@ -212,5 +217,6 @@ router.put("/data/addCalendarTeacher/:_id", addCalendarTeacher); //add utl calen
   -------------------------------
  */
 router.delete("/data/deletedFlag/:_id", deleteFlag);
+router.delete("/data/delete/teacher/:_id", deleteTeacher);
 
 module.exports = router;

@@ -5,14 +5,16 @@ const User = require("../../models/user");
 
 module.exports = {
   summaryGet: async (req, res, next) => {
-    const id = req.id;
+    const _id = req.id;
+    console.log(_id);
     const { language } = req.query;
     if (!language)
       return res.status(400).json({
         error: true,
         message: "Url query is empty",
       });
-    const user = await User.findById(id);
+    const user = await User.findById(_id);
+    console.log(user);
     const studentQuery = await Student.findOne({ email: user.email });
     const summary = await SummaryClass.find({
       id_Student: studentQuery._id,

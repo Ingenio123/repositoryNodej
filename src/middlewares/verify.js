@@ -5,7 +5,7 @@ const Roles = require("../models/roles");
 exports.verifyToken = async (req, res, next) => {
   const autorization = req.headers["authorization"];
   const token = autorization.split(" ")[1];
-  console.log(token);
+  console.log("token", token);
   if (!token)
     return res.status(401).json({ success: false, message: "token  not fund" });
   try {

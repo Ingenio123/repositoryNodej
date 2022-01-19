@@ -203,4 +203,28 @@ module.exports = {
       message: "successfully reviewed from the teacher",
     });
   },
+  deleteTeacher: async (req, res, next) => {
+    try {
+      const { _id } = req.params;
+      console.log(_id);
+      const teacher = await Teachers.findByIdAndDelete(_id);
+      if (!teacher) {
+        return res.status(400).json({
+          error: true,
+          success: false,
+          message: "Teacher not found",
+        });
+      }
+      return res.status(200).json({
+        success: true,
+        error: false,
+        message: "Delete Success fully",
+      });
+    } catch (error) {
+      return res.status(400).json({
+        error: true,
+        message: "Error",
+      });
+    }
+  },
 };
