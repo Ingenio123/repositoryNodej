@@ -14,8 +14,15 @@ module.exports = {
     });
   },
   createOne: async (req, res, next) => {
-    const { firstName, lastName, description, graduated, age, eslogan } =
-      req.body;
+    const {
+      firstName,
+      lastName,
+      description,
+      graduated,
+      age,
+      eslogan,
+      profesionalBackround,
+    } = req.body;
 
     const { imageTeacher } = req.files;
 
@@ -35,6 +42,7 @@ module.exports = {
       graduated,
       eslogan,
       age,
+      profesionalBackround,
       public_id: result.public_id,
       imageUrl: result.secure_url,
     });
@@ -48,29 +56,31 @@ module.exports = {
   },
   updateTeachersData: async (req, res, next) => {
     const _id = req.params.id;
+    console.log(_id);
+    console.log(req.body);
     const {
-      firstName,
+      name,
       lastName,
       description,
       graduated,
       age,
       eslogan,
-      profesionalBackround,
-      Interests,
+      profBackground,
+      interests,
     } = req.body;
 
     await Teachers.findByIdAndUpdate(
       _id,
       {
         $set: {
-          firstName,
+          firstName: name,
           lastName,
           description,
           graduated,
           age,
           eslogan,
-          profesionalBackround,
-          Interests,
+          profesionalBackround: profBackground,
+          Interests: interests,
         },
       },
       {

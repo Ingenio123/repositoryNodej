@@ -8,6 +8,7 @@ const teachersSchema = new Schema({
   lastName: {
     type: String,
     required: true,
+    default: "",
   },
   eslogan: {
     type: String,
@@ -20,9 +21,7 @@ const teachersSchema = new Schema({
   graduated: {
     type: String,
   },
-  graduated: {
-    types: String,
-  },
+
   age: {
     type: Number,
     required: true,
