@@ -7,28 +7,22 @@ const teachersSchema = new Schema({
   },
   lastName: {
     type: String,
-    required: true,
     default: "",
   },
   eslogan: {
     type: String,
-    required: true,
   },
   description: {
     type: String,
-    required: true,
   },
   graduated: {
     type: String,
   },
-
   age: {
     type: Number,
-    required: true,
   },
   public_id: {
     type: String,
-    required: true,
   },
   imageUrl: {
     type: String,
@@ -55,11 +49,9 @@ const teachersSchema = new Schema({
     {
       time: {
         type: Number,
-        require: true,
       },
       urlCalendar: {
         type: String,
-        require: true,
       },
     },
   ],

@@ -49,13 +49,13 @@ const corsOption = {
 
 //  -----------------------------
 app.use(morgan("dev"));
-app.use(express.urlencoded({ extended: true }));
 
 app.use(
   fileupload({
     useTempFiles: true,
   })
 );
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
 

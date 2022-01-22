@@ -14,6 +14,8 @@ module.exports = {
     });
   },
   createOne: async (req, res, next) => {
+    // console.log(req.body);
+    // console.log(req.files);
     const {
       firstName,
       lastName,
@@ -22,10 +24,9 @@ module.exports = {
       age,
       eslogan,
       profesionalBackround,
+      Interests,
     } = req.body;
-
     const { imageTeacher } = req.files;
-
     if (!imageTeacher)
       return res.status(401).json({
         success: false,
@@ -42,6 +43,7 @@ module.exports = {
       graduated,
       eslogan,
       age,
+      Interests,
       profesionalBackround,
       public_id: result.public_id,
       imageUrl: result.secure_url,
