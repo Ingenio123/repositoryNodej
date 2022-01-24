@@ -86,6 +86,9 @@ const studentSchema = new Schema(
         idiom: {
           type: String,
         },
+        expiresCours: {
+          type: Date,
+        },
         CourseData: {
           type: Schema.Types.ObjectId,
           ref: "Courses",

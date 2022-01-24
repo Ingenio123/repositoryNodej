@@ -8,7 +8,7 @@ const auth = {
   user: process.env.PAYPAL_CLIENT,
   pass: process.env.PAYPAL_SECRET,
 };
-const PAYPAL_API = "https://api-m.sandbox.paypal.com"; // Live https://api-m.paypal.com
+const PAYPAL_API = process.env.PAYPAL_API; // Live https://api-m.paypal.com
 const CreatePayment = async (req, res) => {
   const { datosArray, priceTotal } = req.body;
   const _id = req.id;
@@ -37,7 +37,6 @@ const CreatePayment = async (req, res) => {
     body,
     json: true,
   });
-  console.log(response.links);
   for (let i = 0; i < response.links.length; i++) {
     if (response.links[i].rel === "approve") {
       console.log("APROVADO:", response.links[i].href);
