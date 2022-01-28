@@ -17,6 +17,9 @@ const SumarySchema = new Schema(
       ref: "User",
       required: true,
     },
+    score: {
+      type: Number,
+    },
     content: {
       classSummary: {
         type: String,

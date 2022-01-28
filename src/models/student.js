@@ -89,6 +89,10 @@ const studentSchema = new Schema(
         expiresCours: {
           type: Date,
         },
+        score: {
+          type: Number,
+          default: 0,
+        },
         CourseData: {
           type: Schema.Types.ObjectId,
           ref: "Courses",

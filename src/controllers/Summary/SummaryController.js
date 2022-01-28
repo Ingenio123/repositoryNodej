@@ -4,6 +4,16 @@ const Course = require("../../models/courses");
 const User = require("../../models/user");
 
 module.exports = {
+  getScore: async (req, res, next) => {
+    const _id = req.id;
+    const query = req.query;
+    console.log(query);
+
+    return res.status(200).json({
+      status: true,
+      message: "all good ",
+    });
+  },
   summaryGet: async (req, res, next) => {
     const _id = req.id;
     console.log(_id);
@@ -14,7 +24,7 @@ module.exports = {
         message: "Url query is empty",
       });
     const user = await User.findById(_id);
-    console.log(user);
+
     const studentQuery = await Student.findOne({ email: user.email });
     const summary = await SummaryClass.find({
       id_Student: studentQuery._id,
@@ -24,9 +34,10 @@ module.exports = {
     const datos = summary.filter((item) => {
       return item.id_Course.nameCourse === language;
     });
-
+    console.log(datos);
     const datosMap = datos.map((item) => {
       return {
+        score: item.score,
         content: {
           classSummary: item.content.classSummary,
           comments: item.content.comments,
@@ -44,40 +55,27 @@ module.exports = {
       message: "todo bien",
       data: datosMap,
     });
-    // const datos = summary.map((item, index) => {
-    //   if (idioma === item.id_Course.nameCourse) {
-    //     return {
-    //       content: {
-    //         classSummary: item.content.classSummary,
-    //         comments: item.content.comments,
-    //         date: item.content.date,
-    //       },
-    //       course: item.id_Course.nameCourse,
-    //       teacher: {
-    //         email: item.id_Teacher.email,
-    //         picture: item.id_Teacher.picture,
-    //       },
-    //     };
-    //   }
-    // });
-    // console.log(datos);
-    // const { nameCourse } = summary.id_Course;
-    // const { picture } = summary.id_Teacher; // picture ,FirstName
-    // const { content } = summary;
-
-    // const {} = summary;
-    // const { picture } = summary.id_Teacher;
   },
   SummaryPost: async (req, res) => {
     try {
       const idTeacher = req.id;
-      const { SummaryInput, Comments, Name, idiom, email, date } = req.body;
-      if (!SummaryInput || !Comments || !Name || !idiom || !email || !date) {
+      const { SummaryInput, Comments, Name, idiom, email, date, score } =
+        req.body;
+      if (
+        !SummaryInput ||
+        !Comments ||
+        !Name ||
+        !idiom ||
+        !email ||
+        !date ||
+        !score
+      ) {
         return res.status(400).json({
           error: true,
           message: "Data incomplete.",
         });
       }
+
       const StudentQuery = Student.findOne({ email: email });
       const IdiomQuery = Course.findOne({ nameCourse: idiom });
 
@@ -85,6 +83,23 @@ module.exports = {
       // run two asynchronous processes
       const resp = await Promise.all([StudentQuery, IdiomQuery]);
 
+      try {
+          await Student.findOneAndUpdate(
+          {
+            email: email,
+            "courses.idiom": idiom,
+          },
+          { $set: { "courses.$.score": score.toFixed(2) } },
+          {
+            useFindAndModify: false,
+          }
+        );
+      } catch (error) {
+        return res.status(500).json({
+          error: true,
+          message: "Error to server",
+        });
+      }
       const datos = resp.map((item, index) => {
         return {
           id: item._id,
@@ -92,13 +107,11 @@ module.exports = {
         };
       });
 
-      // console.log("id student " + datos[0].id + "\n");
-      // console.log("id course " + datos[0].id);
-      // console.log(req.body);
       const NewSummary = new SummaryClass({
         id_Student: datos[0].id,
         id_Course: datos[1].id,
         id_Teacher: idTeacher,
+        score: score,
         content: {
           classSummary: SummaryInput,
           comments: Comments,
