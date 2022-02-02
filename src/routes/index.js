@@ -203,7 +203,7 @@ router.post("/sendmail", (req, res) => {
 /*
   -------------------------------
              PUT
-  -------------------------------
+  -------------------------------data/addFlagToTeachers/
  */
 router.put("/data/updateTeacher/:id", updateTeachersData); // ############   UPDATE DATA TEACHER            ######
 router.put("/data/updateImgProfile/:id", updateImgProfile); // ############   UPDATE PROFILE IMG     ######

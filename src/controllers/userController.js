@@ -4,6 +4,8 @@ const Role = require("../models/roles");
 const { uploader } = require("cloudinary").v2;
 const { remove } = require("fs-extra");
 const SingletonDelete = require("../patterns/DeleteSingleton");
+const path = require("path");
+
 const registerUser = async (req, res) => {
   const {
     FirstName,
@@ -173,16 +175,15 @@ const UserId = async (req, res) => {
 };
 
 const UpdateImageProfile = async (req, res) => {
-  console.log(req.params);
   const { id } = req.params;
   //
   if (req.files === null) {
     return res.status(400).json({ msg: "No file uploaded" });
   }
   //
-
-  const { file } = req.files;
-  if (!file) {
+  const { image } = req.files;
+  //
+  if (!image) {
     return res.status(400).json({
       error: true,
       message: "Error img not found",
@@ -190,13 +191,14 @@ const UpdateImageProfile = async (req, res) => {
   }
   try {
     const user = await User.findById(id);
-
+    // console.log(user);
     await uploader.destroy(user.publicId);
-    const imageUpdate = await uploader.upload(file.tempFilePath);
-    new SingletonDelete();
+    const imageUpdate = await uploader.upload(image.tempFilePath);
+    // new SingletonDelete();
 
-    // await remove(path.resolve("./tmp"));
+    await remove(path.resolve("./tmp"));
     const { secure_url, public_id } = imageUpdate;
+
     await User.findByIdAndUpdate(
       id,
       {
@@ -204,22 +206,25 @@ const UpdateImageProfile = async (req, res) => {
         publicId: public_id,
       },
       {
+        new: true,
         useFindAndModify: false,
       }
     );
-
     return res.status(200).json({
       error: false,
       message: "todo bien amigo",
       img: secure_url,
     });
   } catch (error) {
-    return res.status(400).json({
+    console.log(error);
+    return res.status(500).json({
       error: true,
-      message: "todo bien amigo",
+      message: "Hubo un error",
     });
   }
 };
+
+// ########################################### //
 
 const RefreshToken = async (req, res) => {
   const refreshToken = req.headers.refresh;

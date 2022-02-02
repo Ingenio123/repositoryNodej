@@ -69,7 +69,7 @@ const studentSchema = new Schema(
           default: false,
         },
         lessonTotal: {
-          type: String,
+          type: Number,
           default: 0,
         },
         lesson: {

@@ -83,13 +83,20 @@ module.exports = {
       // run two asynchronous processes
       const resp = await Promise.all([StudentQuery, IdiomQuery]);
 
+      let total = resp[0].courses[0].lessonTotal - 1;
+
       try {
-          await Student.findOneAndUpdate(
+        await Student.findOneAndUpdate(
           {
             email: email,
             "courses.idiom": idiom,
           },
-          { $set: { "courses.$.score": score.toFixed(2) } },
+          {
+            $set: {
+              "courses.$.score": score.toFixed(2),
+              "courses.$.lessonTotal": total,
+            },
+          },
           {
             useFindAndModify: false,
           }
