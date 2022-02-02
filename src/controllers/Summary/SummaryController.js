@@ -45,6 +45,7 @@ module.exports = {
         },
         course: item.id_Course.nameCourse,
         teacher: {
+          name: item.id_Teacher.FirstName,
           email: item.id_Teacher.email,
           picture: item.id_Teacher.picture,
         },

@@ -117,6 +117,7 @@ const CreateNewStudent = async (user) => {
       time: resCache.dataCourse[i].time,
       idiom: resCache.dataCourse[i].idiom,
       months: resCache.dataCourse[i].months,
+      expiresCours: resCache.dataCourse[i].expiresCours,
     });
   }
   // console.log(newStudent);
@@ -166,58 +167,6 @@ const addCourse = async (email) => {
   }
   const newStudent = await CreateNewStudent(userData);
   console.log("Nuevo Student", newStudent);
-
-  // const fetching = async () => {
-  //   const UserData = await User.findOne({ email });
-  //   console.log("estamos con el estudiante", UserData);
-  //   const resultRole = await Role.findOne({ name: "student" });
-  //   const existeRol = UserData.roles.includes(resultRole._id);
-  //   const { FirstName } = UserData;
-  //   const EmailUser = UserData.email;
-  //   if (existeRol === false) {
-  //     await User.findByIdAndUpdate(
-  //       UserData._id,
-  //       {
-  //         $push: { roles: resultRole._id },
-  //       },
-  //       {
-  //         useFindAndModify: false,
-  //       }
-  //     );
-  //   }
-  //   //paramas (id -> id del user, dataCourse ->  datos de los cursos)
-  //   // addDataCache()
-  //   const { _id } = UserData;
-  //   // var CourseQuery = await Course.findOne({ nameCourse: url });
-  //   const DataUser = await Cache.findOne({
-  //     idUser: _id,
-  //   });
-  //   const DataAsync = DataUser.dataCourse.map(async (item) => {
-  //     item.items[0].map(async (iterador) => {
-  //       console.log(
-  //         "los datos del iterador",
-  //         iterador.lesson,
-  //         iterador.time,
-  //         iterador.months,
-  //         iterador.idiom
-  //       );
-  //       const lesson = iterador.lesson.split(" ")[0];
-  //       const time = iterador.time.split(" ")[0];
-  //       // const StudentFound = await Student.findOne({ email: item.email });
-  //       // console.log(StudentFound);
-  //       const UpdateStudent = SaveNewStudent(
-  //         item.email,
-  //         lesson,
-  //         time,
-  //         iterador.months,
-  //         iterador.idiom
-  //       );
-  //       return UpdateStudent;
-  //     });
-  //   });
-  //   await Promise.all(DataAsync);
-  // };
-  // fetching();
 };
 
 module.exports = {
