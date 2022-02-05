@@ -2,9 +2,26 @@ const User = require("../../models/user"),
   Rol = require("../../models/roles"),
   Student = require("../../models/student"),
   CacheCompra = require("../../models/DataCache"),
-  Course = require("../../models/courses");
+  Course = require("../../models/courses"),
+  axios = require("axios");
 
-const NewCache = async (idUser, dataCourse) => {
+const AddDataToCalendar = async (data) => {
+  console.log("ADD DATA CALENDAR => " + data);
+  const UrlCalendar = "https://www.ingeniocalendar.com/api/student/add";
+  // language, numClass, studentId, email;
+  const num = parseInt(data.courses[0].lesson);
+  console.log(num);
+  const body = {
+    language: data.courses[0].idiom,
+    numClass: num,
+    studentId: data._id,
+    email: data.email,
+  };
+  const response = await axios.post(UrlCalendar, body);
+  console.log(response);
+};
+
+async function NewCache(idUser, dataCourse) {
   const newcacheData = new CacheCompra({
     idUser,
     dataCourse, // Array []
@@ -12,7 +29,7 @@ const NewCache = async (idUser, dataCourse) => {
   const res = await newcacheData.save();
   if (res) return true;
   return false;
-};
+}
 
 // Aqui   estaran todos  los controladores de pago como Busquedas  etc
 const QueryRole = async (nameRole) => {
@@ -51,6 +68,7 @@ const UpdateStudent = async (dataStudent, userData) => {
   const resCache = await DatosCache(_id);
 
   console.log("dataos cache", resCache);
+
   // resCache.dataCourse;
 
   await Student.findOneAndUpdate(
@@ -118,12 +136,15 @@ const CreateNewStudent = async (user) => {
       idiom: resCache.dataCourse[i].idiom,
       months: resCache.dataCourse[i].months,
       expiresCours: resCache.dataCourse[i].expiresCours,
+      kids: resCache.dataCourse[i].kids,
     });
   }
   // console.log(newStudent);
   //
   //
   const resdatos = await newStudent.save();
+  console.log("RES DATOS NEW STUDENT", resdatos);
+  // AddDataToCalendar(resdatos);
 
   await DeleteCache(resCache.idCache);
 
@@ -160,6 +181,7 @@ const DeleteCache = async (idCache) => {
 const addCourse = async (email) => {
   const userData = await User.findOne({ email });
   const verify = await VerifySiExisteELStudent(userData.email);
+
   if (verify.success) {
     await UpdateStudent(verify.student, userData);
     console.log("Student Existe");

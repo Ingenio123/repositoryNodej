@@ -38,12 +38,14 @@ module.exports = {
     const datosMap = datos.map((item) => {
       return {
         score: item.score,
+        kids: item.kids,
         content: {
           classSummary: item.content.classSummary,
           comments: item.content.comments,
           date: item.content.date,
         },
         course: item.id_Course.nameCourse,
+
         teacher: {
           name: item.id_Teacher.FirstName,
           email: item.id_Teacher.email,
@@ -60,7 +62,8 @@ module.exports = {
   SummaryPost: async (req, res) => {
     try {
       const idTeacher = req.id;
-      const { SummaryInput, Comments, Name, idiom, email, date, score } =
+
+      const { SummaryInput, Comments, Name, idiom, email, date, score, kids } =
         req.body;
       if (
         !SummaryInput ||
@@ -120,6 +123,7 @@ module.exports = {
         id_Course: datos[1].id,
         id_Teacher: idTeacher,
         score: score,
+        kids: kids,
         content: {
           classSummary: SummaryInput,
           comments: Comments,

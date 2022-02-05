@@ -93,6 +93,10 @@ const studentSchema = new Schema(
           type: Number,
           default: 0,
         },
+        kids: {
+          type: Boolean,
+          default: false,
+        },
         CourseData: {
           type: Schema.Types.ObjectId,
           ref: "Courses",

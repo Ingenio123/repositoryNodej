@@ -22,6 +22,10 @@ const NewSchema = new Schema({
       months: {
         type: Number,
       },
+      kids: {
+        type: Boolean,
+        default: false,
+      },
       date: {
         type: Date,
         default: new Date(),
@@ -40,9 +44,9 @@ NewSchema.pre("save", async function (next, docs) {
       schema.dataCourse[i].expiresCours = new Date(
         date.setMonth(date.getMonth() + schema.dataCourse[i].months)
       );
-      return next();
     }
   }
+  return next();
 });
 
 module.exports = model("DataCache", NewSchema);

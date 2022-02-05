@@ -17,6 +17,10 @@ const SumarySchema = new Schema(
       ref: "User",
       required: true,
     },
+    kids: {
+      type: Boolean,
+      default: false,
+    },
     score: {
       type: Number,
     },
