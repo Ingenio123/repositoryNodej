@@ -64,20 +64,26 @@ const VerifySiExisteELStudent = async (email) => {
 // ##########################################################
 const UpdateStudent = async (dataStudent, userData) => {
   const { _id, email } = userData;
-  console.log(dataStudent, "Datos del User", userData);
+
   const resCache = await DatosCache(_id);
 
-  console.log("dataos cache", resCache);
+  const Datos = {};
 
-  // resCache.dataCourse;
+  for (let i = 0; i < resCache.dataCourse.length; i++) {
+    Datos.lessonTotal = resCache.dataCourse[i].lesson;
+    Datos.lesson = resCache.dataCourse[i].lesson;
+    Datos.months = resCache.dataCourse[i].months;
+    Datos.kids = resCache.dataCourse[i].kids;
+    Datos.time = resCache.dataCourse[i].time;
+    Datos.expiresCours = resCache.dataCourse[i].expiresCours;
+    Datos.idiom = resCache.dataCourse[i].idiom;
+  }
 
   await Student.findOneAndUpdate(
     { email: email },
     {
       $push: {
-        courses: {
-          $each: resCache.dataCourse,
-        },
+        courses: Datos,
       },
     },
     {
