@@ -14,6 +14,57 @@ module.exports = {
       message: "all good ",
     });
   },
+  summaryStudentId: async (req, res) => {
+    const _id = req.id;
+
+    if (!_id) {
+      return res.status(400).json({
+        success: false,
+        message: "User Not Found or  Incomplet params",
+      });
+    }
+
+    try {
+      const user = await User.findById(_id);
+      const student = await Student.findOne({ email: user.email });
+
+      const dataStudent = await SummaryClass.find(
+        { id_Student: student._id },
+        "content kids -_id"
+      )
+        .populate({
+          path: "id_Teacher",
+          select: "picture email FirstName  -_id",
+        })
+        .populate({
+          path: "id_Course",
+          select: "nameCourse -_id",
+        });
+      const datosfinally = dataStudent.map((item) => {
+        return {
+          kids: item.kids,
+          content: {
+            classSummary: item.content.classSummary,
+            comments: item.content.comments,
+            date: item.content.date,
+          },
+          course: item.id_Course.nameCourse,
+          teacher: {
+            name: item.id_Teacher.FirstName,
+            email: item.id_Teacher.email,
+            picture: item.id_Teacher.picture,
+          },
+        };
+      });
+      return res.status(200).json({
+        success: true,
+        data: datosfinally,
+      });
+    } catch (_error) {
+      console.log(_error);
+      return res.status(500).json({});
+    }
+  },
   summaryGet: async (req, res, next) => {
     const _id = req.id;
     console.log(_id);
@@ -144,5 +195,35 @@ module.exports = {
         message: "Error to Server",
       });
     }
+  },
+  SummaryPostScore: async (req, res) => {
+    const id = req.id;
+    const { score, email, kids, idiom } = req.body;
+    console.log(score, email, kids, idiom);
+    const StudentQuery = Student.findOne({ email: email });
+    const IdiomQuery = Course.findOne({ nameCourse: idiom });
+    const resp = await Promise.all([StudentQuery, IdiomQuery]);
+    const variable = score + 33;
+    try {
+      await Student.findOneAndUpdate(
+        {
+          email: email,
+          "courses.idiom": idiom,
+        },
+        {
+          $set: {
+            "courses.$.score": variable.toFixed(2),
+          },
+        },
+        {
+          useFindAndModify: false,
+        }
+      );
+    } catch (error) {
+      console.log(error);
+    }
+    return res.status(200).json({
+      message: "all good",
+    });
   },
 };
