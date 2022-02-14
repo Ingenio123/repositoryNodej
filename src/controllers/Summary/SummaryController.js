@@ -114,17 +114,8 @@ module.exports = {
     try {
       const idTeacher = req.id;
 
-      const { SummaryInput, Comments, Name, idiom, email, date, score, kids } =
-        req.body;
-      if (
-        !SummaryInput ||
-        !Comments ||
-        !Name ||
-        !idiom ||
-        !email ||
-        !date ||
-        !score
-      ) {
+      const { SummaryInput, Comments, idiom, email, date, kids } = req.body;
+      if (!SummaryInput || !Comments || !idiom || !email || !date) {
         return res.status(400).json({
           error: true,
           message: "Data incomplete.",
@@ -148,7 +139,6 @@ module.exports = {
           },
           {
             $set: {
-              "courses.$.score": score.toFixed(2),
               "courses.$.lessonTotal": total,
             },
           },
@@ -173,7 +163,6 @@ module.exports = {
         id_Student: datos[0].id,
         id_Course: datos[1].id,
         id_Teacher: idTeacher,
-        score: score,
         kids: kids,
         content: {
           classSummary: SummaryInput,
@@ -200,15 +189,22 @@ module.exports = {
     const id = req.id;
     const { score, email, kids, idiom } = req.body;
     console.log(score, email, kids, idiom);
+    if (!email || !idiom)
+      return res.status(400).json({
+        error: true,
+        message: "Data incomplete",
+      });
     const StudentQuery = Student.findOne({ email: email });
     const IdiomQuery = Course.findOne({ nameCourse: idiom });
     const resp = await Promise.all([StudentQuery, IdiomQuery]);
-    const variable = score + 33;
+    const variable = score;
+    console.log(variable);
     try {
       await Student.findOneAndUpdate(
         {
           email: email,
           "courses.idiom": idiom,
+          "courses.kids": kids,
         },
         {
           $set: {
@@ -221,6 +217,7 @@ module.exports = {
       );
     } catch (error) {
       console.log(error);
+      return res.status(500).json({});
     }
     return res.status(200).json({
       message: "all good",
