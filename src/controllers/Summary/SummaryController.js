@@ -121,21 +121,37 @@ module.exports = {
           message: "Data incomplete.",
         });
       }
-
       const StudentQuery = Student.findOne({ email: email });
       const IdiomQuery = Course.findOne({ nameCourse: idiom });
 
       // console.log("id user req.id: \t" + req.id);
       // run two asynchronous processes
       const resp = await Promise.all([StudentQuery, IdiomQuery]);
+      // console.log(resp);
+      const [student, course] = resp;
+      // console.log(student.courses); // student tenemos el object del student
 
-      let total = resp[0].courses[0].lessonTotal - 1;
+      const datosS = student.courses.find(
+        (elem) => elem.idiom === idiom && elem.kids === kids
+      );
+
+      // console.log("Datos Student son %s values: ", datosS);
+      //
+      if (datosS.lessonTotal === 0) {
+        return res.status(400).json({
+          error: true,
+          expireLesson: true,
+        });
+      }
+
+      let total = datosS.lessonTotal - 1;
 
       try {
         await Student.findOneAndUpdate(
           {
             email: email,
             "courses.idiom": idiom,
+            "courses.kids": datosS.kids,
           },
           {
             $set: {
@@ -171,13 +187,13 @@ module.exports = {
         },
       });
 
-      const SummaryResult = await NewSummary.save();
+      await NewSummary.save();
 
       // console.log(SummaryResult);
-
       return res.status(200).json({
         message: "Ok",
       });
+
     } catch (error) {
       return res.status(500).json({
         error: true,
