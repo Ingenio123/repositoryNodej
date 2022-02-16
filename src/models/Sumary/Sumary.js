@@ -21,9 +21,6 @@ const SumarySchema = new Schema(
       type: Boolean,
       default: false,
     },
-    score: {
-      type: Number,
-    },
     content: {
       classSummary: {
         type: String,

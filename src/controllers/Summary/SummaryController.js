@@ -110,11 +110,13 @@ module.exports = {
       data: datosMap,
     });
   },
+  // ###################################################### //
   SummaryPost: async (req, res) => {
     try {
       const idTeacher = req.id;
 
       const { SummaryInput, Comments, idiom, email, date, kids } = req.body;
+
       if (!SummaryInput || !Comments || !idiom || !email || !date) {
         return res.status(400).json({
           error: true,
@@ -130,7 +132,10 @@ module.exports = {
       // console.log(resp);
       const [student, course] = resp;
       // console.log(student.courses); // student tenemos el object del student
-
+      // console.log("Id student: " + student._id);
+      // console.log("Id course: " + course._id);
+      // console.log("Id teacher: " + idTeacher);
+      //
       const datosS = student.courses.find(
         (elem) => elem.idiom === idiom && elem.kids === kids
       );
@@ -146,38 +151,35 @@ module.exports = {
 
       let total = datosS.lessonTotal - 1;
 
-      try {
-        await Student.findOneAndUpdate(
-          {
-            email: email,
-            "courses.idiom": idiom,
-            "courses.kids": datosS.kids,
+      const studenstQuery = await Student.findOneAndUpdate(
+        {
+          email: email,
+          "courses.idiom": idiom,
+          "courses.kids": datosS.kids,
+        },
+        {
+          $set: {
+            "courses.$.lessonTotal": total,
           },
-          {
-            $set: {
-              "courses.$.lessonTotal": total,
-            },
-          },
-          {
-            useFindAndModify: false,
-          }
-        );
-      } catch (error) {
-        return res.status(500).json({
-          error: true,
-          message: "Error to server",
-        });
-      }
+        },
+        {
+          useFindAndModify: false,
+        }
+      );
+
+      // ###########################################
+      // console.log("Estos son los resultados: " + resp);
       const datos = resp.map((item, index) => {
         return {
           id: item._id,
           index: index,
         };
       });
+      // console.log("Datos son : " + datos);
 
       const NewSummary = new SummaryClass({
-        id_Student: datos[0].id,
-        id_Course: datos[1].id,
+        id_Student: student._id,
+        id_Course: course._id,
         id_Teacher: idTeacher,
         kids: kids,
         content: {
@@ -187,13 +189,12 @@ module.exports = {
         },
       });
 
-      await NewSummary.save();
+      const saveSummary = await NewSummary.save();
 
       // console.log(SummaryResult);
       return res.status(200).json({
         message: "Ok",
       });
-
     } catch (error) {
       return res.status(500).json({
         error: true,
@@ -201,6 +202,8 @@ module.exports = {
       });
     }
   },
+
+  // ####################################################################
   SummaryPostScore: async (req, res) => {
     const id = req.id;
     const { score, email, kids, idiom } = req.body;
