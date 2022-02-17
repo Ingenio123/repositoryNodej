@@ -7,18 +7,23 @@ const User = require("../../models/user"),
 
 const AddDataToCalendar = async (data) => {
   console.log("ADD DATA CALENDAR => " + data);
+  // const UrlCalendar = "https://www.ingeniocalendar.com/api/student/add";
   const UrlCalendar = "https://www.ingeniocalendar.com/api/student/add";
   // language, numClass, studentId, email;
   const num = parseInt(data.courses[0].lesson);
-  console.log(num);
+  console.log("Num de lessons: %s", num);
   const body = {
-    language: data.courses[0].idiom,
+    languages: data.courses[0].idiom,
     numClass: num,
     studentId: data._id,
     email: data.email,
   };
-  const response = await axios.post(UrlCalendar, body);
-  console.log(response);
+  const response = await axios.post(UrlCalendar, body, {
+    Headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  console.log("Response de ingenio calendar: " + response.data);
 };
 
 async function NewCache(idUser, dataCourse) {
@@ -150,7 +155,7 @@ const CreateNewStudent = async (user) => {
   //
   const resdatos = await newStudent.save();
   console.log("RES DATOS NEW STUDENT", resdatos);
-  // AddDataToCalendar(resdatos);
+  AddDataToCalendar(resdatos);
 
   await DeleteCache(resCache.idCache);
 
