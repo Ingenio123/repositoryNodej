@@ -8,6 +8,7 @@ const userSchema = new Schema(
     },
     LastName: {
       type: String,
+      default: "",
     },
     email: {
       type: String,
@@ -54,6 +55,10 @@ const userSchema = new Schema(
     },
     Country: {
       type: String,
+    },
+    CountryNationality: {
+      type: String,
+      default: "",
     },
     roles: [
       {

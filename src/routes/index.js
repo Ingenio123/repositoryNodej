@@ -52,7 +52,11 @@ const {
 } = require("../controllers/flagsController");
 
 const { GoogleAuth } = require("../controllers/googleAuth");
-const { UserId, RefreshToken } = require("../controllers/userController");
+const {
+  UserId,
+  RefreshToken,
+  UpdateInformationUser,
+} = require("../controllers/userController");
 
 const {
   ClientPay,
@@ -192,6 +196,8 @@ router.post("/payIngenioLanguages", ClientPay);
 
 router.post("/createCodeDescuento", CreateCodeDescuento);
 router.post("/verifycodeDescuento", CodeDescuento);
+
+router.post("/data/updateinformation", verifyToken, UpdateInformationUser);
 
 // -----------------------------------------------------------
 const email = require("../controllers/ControllerEmails/index");

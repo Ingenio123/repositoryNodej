@@ -3,8 +3,68 @@ const jwt = require("jsonwebtoken");
 const Role = require("../models/roles");
 const { uploader } = require("cloudinary").v2;
 const { remove } = require("fs-extra");
-const SingletonDelete = require("../patterns/DeleteSingleton");
+// const SingletonDelete = require("../patterns/DeleteSingleton");
 const path = require("path");
+
+const UpdateInformationUser = async (req, res, next) => {
+  console.info(req.body);
+  console.info(req.id);
+  // Age: '20',
+  // firstName: 'first',
+  // lastName: 'last ',
+  // country: 'ec',
+  // phone: '593939098050',
+  // gender: 'Male',
+  // countryeNationality: 'EC
+  const _id = req.id;
+  var {
+    Age,
+    firstName,
+    lastName,
+    country,
+    phone,
+    gender,
+    countryeNationality,
+  } = req.body;
+  try {
+    const UserData = await User.findById(_id);
+    // console.log(UserData);
+
+    const { FirstName, Country, Gender, numberCell } = UserData;
+
+    if (!firstName) {
+      firstName = FirstName;
+    }
+    if (!Country) {
+      country = Country;
+    }
+    if (!gender) {
+      gender = Gender;
+    }
+    if (!phone) {
+      phone = numberCell;
+    }
+    await User.findByIdAndUpdate(
+      { _id: _id },
+      {
+        $set: {
+          FirstName: firstName,
+          LastName: lastName,
+          Country: country,
+          Gender: gender,
+          numberCell: phone,
+          age: Age,
+          CountryNationality: countryeNationality,
+        },
+      }
+    );
+    return res.status(200).json({
+      message: "All good",
+    });
+  } catch (error) {
+    throw error;
+  }
+};
 
 const registerUser = async (req, res) => {
   const {
@@ -275,5 +335,6 @@ module.exports = {
   UserConRoles,
   UpdateImageProfile,
   RefreshToken,
+  UpdateInformationUser,
   // VerificacionRoles,
 };
