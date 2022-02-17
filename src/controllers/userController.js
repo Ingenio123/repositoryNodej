@@ -191,8 +191,12 @@ const UpdateImageProfile = async (req, res) => {
   }
   try {
     const user = await User.findById(id);
+    // console.log("User Public id: %s", user.publicId);
     // console.log(user);
-    await uploader.destroy(user.publicId);
+    if (user.publicId) {
+      console.log("Image destroy:");
+      await uploader.destroy(user.publicId);
+    }
     const imageUpdate = await uploader.upload(image.tempFilePath);
     // new SingletonDelete();
 
