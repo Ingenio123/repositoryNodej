@@ -206,8 +206,8 @@ module.exports = {
   // ####################################################################
   SummaryPostScore: async (req, res) => {
     const id = req.id;
-    const { score, email, kids, idiom } = req.body;
-    console.log(score, email, kids, idiom);
+    const { email, kids, idiom } = req.body;
+    console.log(email, kids, idiom);
     if (!email || !idiom)
       return res.status(400).json({
         error: true,
@@ -216,8 +216,15 @@ module.exports = {
     const StudentQuery = Student.findOne({ email: email });
     const IdiomQuery = Course.findOne({ nameCourse: idiom });
     const resp = await Promise.all([StudentQuery, IdiomQuery]);
-    const variable = score;
-    console.log(variable);
+    //
+
+    // console.log(resp[0].courses);
+    const datoEncontrado = resp[0].courses.filter(
+      (elem) => elem.idiom === idiom && elem.kids === kids
+    );
+    var { score } = datoEncontrado[0];
+    const bandera = score + 5.55;
+
     try {
       await Student.findOneAndUpdate(
         {
@@ -227,7 +234,7 @@ module.exports = {
         },
         {
           $set: {
-            "courses.$.score": variable.toFixed(2),
+            "courses.$.score": bandera.toFixed(2),
           },
         },
         {
