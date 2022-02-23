@@ -151,30 +151,30 @@ module.exports = {
 
       let total = datosS.lessonTotal - 1;
 
-      const studenstQuery = await Student.findOneAndUpdate(
-        {
-          email: email,
-          "courses.idiom": idiom,
-          "courses.kids": datosS.kids,
-        },
-        {
-          $set: {
-            "courses.$.lessonTotal": total,
-          },
-        },
-        {
-          useFindAndModify: false,
-        }
-      );
+      // const studenstQuery = await Student.findOneAndUpdate(
+      //   {
+      //     email: email,
+      //     "courses.idiom": idiom,
+      //     "courses.kids": datosS.kids,
+      //   },
+      //   {
+      //     $set: {
+      //       "courses.$.lessonTotal": total,
+      //     },
+      //   },
+      //   {
+      //     useFindAndModify: false,
+      //   }
+      // );
 
       // ###########################################
       // console.log("Estos son los resultados: " + resp);
-      const datos = resp.map((item, index) => {
-        return {
-          id: item._id,
-          index: index,
-        };
-      });
+      // const datos = resp.map((item, index) => {
+      //   return {
+      //     id: item._id,
+      //     index: index,
+      //   };
+      // });
       // console.log("Datos son : " + datos);
 
       const NewSummary = new SummaryClass({
@@ -189,7 +189,7 @@ module.exports = {
         },
       });
 
-      const saveSummary = await NewSummary.save();
+      await NewSummary.save();
 
       // console.log(SummaryResult);
       return res.status(200).json({

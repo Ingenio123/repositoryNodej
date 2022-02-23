@@ -125,6 +125,7 @@ app.use(require("./routes/temary"));
 app.use(require("./routes/summay"));
 app.use(require("./routes/verifyData"));
 app.use("/feedback", require("./routes/feedback"));
+app.use("/v1", require("./routes/ScoreExam"));
 // static folder
 app.use(express.static(path.join(__dirname, "public")));
 
