@@ -37,6 +37,10 @@ const ScoreExam = new Schema(
                   type: Schema.Types.ObjectId,
                   ref: "User",
                 },
+                Date: {
+                  type: Date,
+                  default: Date.now(),
+                },
               },
             ],
           },

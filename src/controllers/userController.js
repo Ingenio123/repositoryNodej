@@ -3,6 +3,10 @@ const jwt = require("jsonwebtoken");
 const Role = require("../models/roles");
 const { uploader } = require("cloudinary").v2;
 const { remove } = require("fs-extra");
+const validator = require("email-validator");
+const crypto = require("crypto");
+const { transporter } = require("../patterns/NodemailerAdapter");
+
 // const SingletonDelete = require("../patterns/DeleteSingleton");
 const path = require("path");
 
@@ -328,6 +332,70 @@ const RefreshToken = async (req, res) => {
 // const VerificacionRoles =  async (req,res)=>{
 // }
 
+const ForgotPassword = async (req, res, next) => {
+  const { email } = req.body;
+  if (!email)
+    return res.status(400).json({
+      error: true,
+      messagge: "Email not found",
+    });
+  // verificacion   de email  si existe o no existe / refact. Middleware Global para verificar si existe los emails inp
+  const validateEmail = validator.validate(email);
+  if (!validateEmail)
+    return res.status(400).json({
+      error: true,
+      message: "Email no exist",
+    });
+  // generate new password
+  const PASSWORD_LENGTH = 12;
+  // const LOWERCASE_ALPHABET = "abcdefghijklmnopqrstuvwxyz"; // 26 chars
+  const UPPERCASE_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; // 26 chars
+  const NUMBERS = "0123456789"; // 10 chars
+  // const SYMBOLS = ",./<>?;'\":[]\\|}{=-_+`~!@#$%^&*()"; // 32 chars
+  const ALPHANUMERIC_CHARS = UPPERCASE_ALPHABET + NUMBERS; // 62 chars
+  // const ALL_CHARS = ALPHANUMERIC_CHARS + SYMBOLS; // 94 chars
+  console.log(generateRandomPassword(PASSWORD_LENGTH, ALPHANUMERIC_CHARS));
+
+  const generatePassword = generateRandomPassword(
+    PASSWORD_LENGTH,
+    ALPHANUMERIC_CHARS
+  );
+  // before password => $2b$10$RpFYGdBAXGvUXzSE3sNahOhi1GmpjGjq0e20QvZt78jeEwVHg6tmm
+  //Updated Password  Model User
+  try {
+    await User.findOneAndUpdate(
+      {
+        email: email,
+      },
+      {
+        $set: {
+          password: generatePassword,
+        },
+      },
+      {
+        useFindAndModify: false,
+      }
+    );
+    var mailOptions = {
+      from: '"Example Team" <from@example.com>',
+      to: `${email}`,
+      subject: "Nice Nodemailer test",
+      text: "Hey there, it’s our first message sent with Nodemailer ;) ",
+      html: `<b>Hey there! </b><br> this is new password => ${generatePassword} `,
+    };
+    const info = await transporter.sendMail(mailOptions);
+    console.log(info);
+  } catch (error) {
+    return res.status(500);
+  }
+  //send email new password with token
+
+  return res.status(200).json({
+    error: false,
+    message: "All good",
+  });
+};
+
 module.exports = {
   registerUser,
   signInUser,
@@ -336,5 +404,19 @@ module.exports = {
   UpdateImageProfile,
   RefreshToken,
   UpdateInformationUser,
+  ForgotPassword,
   // VerificacionRoles,
 };
+
+function generateRandomPassword(length, alphabet) {
+  var rb = crypto.randomBytes(length);
+
+  var rp = "";
+
+  for (var i = 0; i < length; i++) {
+    rb[i] = rb[i] % alphabet.length;
+    rp += alphabet[rb[i]];
+  }
+
+  return rp;
+}

@@ -86,6 +86,7 @@ module.exports = {
       return item.id_Course.nameCourse === language;
     });
     console.log(datos);
+
     const datosMap = datos.map((item) => {
       return {
         score: item.score,
@@ -96,7 +97,6 @@ module.exports = {
           date: item.content.date,
         },
         course: item.id_Course.nameCourse,
-
         teacher: {
           name: item.id_Teacher.FirstName,
           email: item.id_Teacher.email,

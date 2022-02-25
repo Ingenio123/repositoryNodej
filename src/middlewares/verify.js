@@ -4,11 +4,13 @@ const Roles = require("../models/roles");
 
 exports.verifyToken = async (req, res, next) => {
   const autorization = req.headers["authorization"];
-  const token = autorization.split(" ")[1];
-  console.log("token", token);
-  if (!token)
-    return res.status(401).json({ success: false, message: "token  not fund" });
   try {
+    const token = autorization.split(" ")[1];
+    console.log("token", token);
+    if (!token)
+      return res
+        .status(401)
+        .json({ success: false, message: "token  not fund" });
     const decode = jwt.verify(token, process.env.JWT_SECRET);
     req.id = decode.id;
     next();
@@ -17,12 +19,13 @@ exports.verifyToken = async (req, res, next) => {
     return res.status(400).json({
       error: true,
       expired: true,
-      message: "expired token",
+      message: "expired token / token mal format",
     });
   }
 };
 exports.verifyEmail = async (req, res, next) => {
   const userEmail = await User.findOne({ email: req.body.email });
+  console.log(userEmail);
   if (userEmail) {
     return res.status(401).json({
       success: false,
