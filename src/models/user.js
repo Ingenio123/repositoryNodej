@@ -84,12 +84,21 @@ const userSchema = new Schema(
 
 userSchema.pre("save", async function (next) {
   const user = this;
-  if (!user.isModified("password")) return next();
+  if (!user.isModified("password")) return next(); // => !true -> false  / !false -> true
   const salt = await genSalt(10);
   const hashPassword = await hash(user.password, salt);
   user.password = hashPassword;
   next();
 });
+
+// userSchema.pre("findOneAndUpdate", async function (sig) {
+//   // console.log(this.getFilter());
+//   const saltBcrypt = await genSalt(10);
+//   const passwordHash = await hash(this.password, saltBcrypt);
+//   this.password = passwordHash;
+//   console.log("Update");
+//   return sig();
+// });
 
 /* ----------------------------------------------------------
     methos de  password de comparacion de password  

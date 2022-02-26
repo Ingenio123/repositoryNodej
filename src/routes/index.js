@@ -57,6 +57,7 @@ const {
   RefreshToken,
   UpdateInformationUser,
   ForgotPassword,
+  UpdateNewPassword,
 } = require("../controllers/userController");
 
 const {
@@ -219,6 +220,7 @@ router.put("/data/addTeacherFlag/:id", assignTeachertoFlag); //asing teacher to 
 router.put("/data/addFlagToTeachers/:_id", addFlagtoTeachers);
 router.put("/data/addCalendarTeacher/:_id", addCalendarTeacher); //add utl calendar
 router.put("/data/updatePassword", ForgotPassword);
+router.put("/data/updateNewPassword", verifyToken, UpdateNewPassword);
 /*
   -------------------------------
               DELETE

@@ -6,6 +6,7 @@ const { remove } = require("fs-extra");
 const validator = require("email-validator");
 const crypto = require("crypto");
 const { transporter } = require("../patterns/NodemailerAdapter");
+const { hash, genSalt } = require("bcrypt");
 
 // const SingletonDelete = require("../patterns/DeleteSingleton");
 const path = require("path");
@@ -82,7 +83,7 @@ const registerUser = async (req, res) => {
     country,
     phone,
   } = req.body;
-
+  console.log(email);
   if (
     !FirstName ||
     !LastName ||
@@ -332,6 +333,48 @@ const RefreshToken = async (req, res) => {
 // const VerificacionRoles =  async (req,res)=>{
 // }
 
+const UpdateNewPassword = async (req, res, next) => {
+  const { password, confirmPassword } = req.body;
+  if (!password || !confirmPassword) {
+    return res.status(400).json({
+      error: true,
+      message: "Data incomplet",
+    });
+  }
+  if (password !== confirmPassword) {
+    return res.statu(400).json({
+      error: true,
+      message: "Error",
+    });
+  }
+  const _id = req.id;
+  const salt = await genSalt(10);
+  const hashPassword = await hash(confirmPassword, salt);
+
+  const updatePassword = await User.findByIdAndUpdate(
+    { _id },
+    {
+      $set: {
+        password: hashPassword,
+      },
+    },
+    {
+      useFindAndModify: false,
+    }
+  );
+  if (!updatePassword)
+    return res.status(400).json({
+      error: true,
+      message: "User not found",
+    });
+  // console.log(req.body);
+  return res.status(200).json({
+    error: false,
+    success: true,
+    message: "All good",
+  });
+};
+
 const ForgotPassword = async (req, res, next) => {
   const { email } = req.body;
   if (!email)
@@ -362,38 +405,83 @@ const ForgotPassword = async (req, res, next) => {
   );
   // before password => $2b$10$RpFYGdBAXGvUXzSE3sNahOhi1GmpjGjq0e20QvZt78jeEwVHg6tmm
   //Updated Password  Model User
+  // const { hash, , compare } = require("bcrypt");
+  const salt = await genSalt(10);
+  const hashPassword = await hash(generatePassword, salt);
   try {
-    await User.findOneAndUpdate(
+    const update = await User.findOneAndUpdate(
       {
         email: email,
       },
       {
         $set: {
-          password: generatePassword,
+          password: hashPassword,
         },
       },
       {
         useFindAndModify: false,
       }
     );
+    if (!update) {
+      return res.status(400).json({
+        error: true,
+        message: "No update not ",
+      });
+    }
+
     var mailOptions = {
-      from: '"Example Team" <from@example.com>',
+      from: '"Ingenio Languages" <ingeniolanguages.team@gmail.com>',
       to: `${email}`,
-      subject: "Nice Nodemailer test",
-      text: "Hey there, it’s our first message sent with Nodemailer ;) ",
-      html: `<b>Hey there! </b><br> this is new password => ${generatePassword} `,
+      subject: "Ingenio Languages password reset",
+      // text: "Hey there, it’s our first message sent with Nodemailer ;) ",
+      html: `
+
+<!--Copia desde aquí-->
+<table style="max-width: 600px; padding: 10px; margin:0 auto; border-collapse: collapse;">
+
+	<tr>
+		<td style="background-color: #ecf0f1">
+			<div style="color: #34495e; margin: 4% 10% 2%; text-align: justify;font-family: sans-serif">
+				<h2 style="color: #2563EB; margin: 0 0 7px">Hi ${update.FirstName}!</h2>
+        	<br/>
+				<p style="margin: 2px; font-size: 15px">
+				You recently requested to reset the password for your <b>Ingenio Languages</b> account. In order to reset it, we will provide you with a <b>temporary password</b>.<br/> 
+Please, remember that once you sign in with it, you will need to replace it with a new password that you will remember.</p>
+
+				<br/>
+				<br/>
+        <span style="margin-left:40px; font-size: 20px; " >Sign in instructions</span>
+				<ul style="font-size: 15px;  margin: 10px 0">
+					<li><b>E-mail:</b> enter your email address</li>
+					<li><b>Temporary Password:</b> ${generatePassword}</li>
+
+				</ul>
+				
+				<br/>
+				<br/>
+				<div style="width: 100%; text-align: center">
+					<a style="text-decoration: none; border-radius: 5px; padding: 11px 23px; color: white; background-color: #3498db" href="http://localhost:3000/siginforgotpassword">Sign in at Ingenio Languages website</a>	
+				</div>
+				<p style="color: #b3b3b3; font-size: 12px; text-align: center;margin: 30px 0 0">www.ingeniolanguages.com</p>
+			</div>
+		</td>
+	</tr>
+</table>
+<!--hasta aquí-->
+
+`,
     };
-    const info = await transporter.sendMail(mailOptions);
-    console.log(info);
+    await transporter.sendMail(mailOptions);
+    // console.log(info);
+    return res.status(200).json({
+      error: false,
+      message: "All good",
+      success: true,
+    });
   } catch (error) {
     return res.status(500);
   }
   //send email new password with token
-
-  return res.status(200).json({
-    error: false,
-    message: "All good",
-  });
 };
 
 module.exports = {
@@ -405,6 +493,7 @@ module.exports = {
   RefreshToken,
   UpdateInformationUser,
   ForgotPassword,
+  UpdateNewPassword,
   // VerificacionRoles,
 };
 
