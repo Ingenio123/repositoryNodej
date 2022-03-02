@@ -83,20 +83,84 @@ const UpdateStudent = async (dataStudent, userData) => {
     Datos.expiresCours = resCache.dataCourse[i].expiresCours;
     Datos.idiom = resCache.dataCourse[i].idiom;
   }
-
-  await Student.findOneAndUpdate(
-    { email: email },
-    {
-      $push: {
-        courses: Datos,
+  const { success, data } = await VerifiyIdiom(userData, Datos); // si existe el package ->  idiom/kids
+  console.log(success, data);
+  if (!success) {
+    // success -> false
+    // opcion 1
+    await Student.findOneAndUpdate(
+      { email: email },
+      {
+        $push: {
+          courses: Datos,
+        },
       },
-    },
-    {
-      useFindAndModify: false,
-    }
-  );
+      {
+        useFindAndModify: false,
+      }
+    );
+  }
+  //
+
+  const datafilter = data.courses
+    .filter((e) => e.idiom === Datos.idiom && e.kids === Datos.kids)
+    .pop();
+  console;
+  const lessonTotal = datafilter.lessonTotal;
+  await UpdateCourseExistente(userData, Datos, lessonTotal);
 
   await DeleteCache(resCache.idCache);
+};
+const VerifiyIdiom = async (userDataCache, Datos, data) => {
+  // console.log("Datos" + JSON.stringify(Datos));
+  const { email } = userDataCache;
+  const studentExist = await Student.findOne({
+    email: email,
+    "courses.idiom": Datos.idiom,
+    "courses.kids": Datos.kids,
+  });
+
+  if (!studentExist) return { data: "", success: false };
+  return {
+    data: studentExist,
+    success: true,
+  };
+};
+
+const UpdateCourseExistente = async (
+  userDataCache,
+  Datos,
+  numLessonAnterior
+) => {
+  const { email } = userDataCache;
+  // console.log("Datos" + JSON.stringify(Datos));
+  // console.log("Num LessonAnterior", numLessonAnterior);
+  let numTotalLesson = parseInt(Datos.lesson) + parseInt(numLessonAnterior);
+  await Student.findOneAndUpdate(
+    {
+      email: email,
+      "courses.idiom": Datos.idiom,
+      "courses.kids": Datos.kids,
+    },
+    {
+      $set: {
+        "courses.$.lesson": Datos.lesson,
+        "courses.$.months": Datos.months,
+        "courses.$.time": Datos.time,
+        "courses.$.expiresCours": Datos.expiresCours,
+        "courses.$.lessonTotal": numTotalLesson,
+      },
+    },
+
+    {
+      useFindAndModify: false,
+      // arrayFilters: [{ "idex0.lesson": idiom }],
+    }
+  );
+  return {
+    data: "",
+    success: true,
+  };
 };
 
 const StructItemsCompra = async (itemsArray, Email) => {
