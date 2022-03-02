@@ -428,6 +428,10 @@ const ForgotPassword = async (req, res, next) => {
         message: "No update not ",
       });
     }
+    let name_user = update.FirstName;
+    if (!update.FirstName) {
+      name_user = "";
+    }
 
     var mailOptions = {
       from: '"Ingenio Languages" <ingeniolanguages.team@gmail.com>',
@@ -436,13 +440,13 @@ const ForgotPassword = async (req, res, next) => {
       // text: "Hey there, it’s our first message sent with Nodemailer ;) ",
       html: `
 
-<!--Copia desde aquí-->
+<!--Copia desde aquí--> 
 <table style="max-width: 600px; padding: 10px; margin:0 auto; border-collapse: collapse;">
 
 	<tr>
 		<td style="background-color: #ecf0f1">
 			<div style="color: #34495e; margin: 4% 10% 2%; text-align: justify;font-family: sans-serif">
-				<h2 style="color: #2563EB; margin: 0 0 7px">Hi ${update.FirstName}!</h2>
+				<h2 style="color: #2563EB; margin: 0 0 7px">Hi ${name_user}!</h2>
         	<br/>
 				<p style="margin: 2px; font-size: 15px">
 				You recently requested to reset the password for your <b>Ingenio Languages</b> account. In order to reset it, we will provide you with a <b>temporary password</b>.<br/> 

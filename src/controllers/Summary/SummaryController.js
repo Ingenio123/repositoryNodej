@@ -151,21 +151,21 @@ module.exports = {
 
       let total = datosS.lessonTotal - 1;
 
-      // const studenstQuery = await Student.findOneAndUpdate(
-      //   {
-      //     email: email,
-      //     "courses.idiom": idiom,
-      //     "courses.kids": datosS.kids,
-      //   },
-      //   {
-      //     $set: {
-      //       "courses.$.lessonTotal": total,
-      //     },
-      //   },
-      //   {
-      //     useFindAndModify: false,
-      //   }
-      // );
+      const studenstQuery = await Student.findOneAndUpdate(
+        {
+          email: email,
+          "courses.idiom": idiom,
+          "courses.kids": datosS.kids,
+        },
+        {
+          $set: {
+            "courses.$.lessonTotal": total,
+          },
+        },
+        {
+          useFindAndModify: false,
+        }
+      );
 
       // ###########################################
       // console.log("Estos son los resultados: " + resp);
