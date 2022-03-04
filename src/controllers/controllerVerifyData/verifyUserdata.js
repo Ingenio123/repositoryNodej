@@ -105,12 +105,14 @@ const AddDataUserDemoclass = async (req, res, next) => {
         <li><b>Last Name:</b> ${req.body.LastName}</li>
         <li><b>Age</b> ${req.body.age}</li>
         <li><b>E-mail:</b> ${req.body.email}</li>
-        <li><b>AboutUs</b> ${req.body.AboutUs}</li>
-        <li><b>Language</b> ${req.body.Language}</li>
+        <li><b>AboutUs:</b> ${req.body.AboutUs}</li>
+        <li><b>Language: </b> ${req.body.Language}</li>
         <li><b>Level:</b> ${req.body.Level}</li>
-        <li><b>Country Nationality:</b> ${req.body.contryNationality}</li>
-        <li><b>Number Cell:</b> +${req.body.phoneNumber}</li>
-        <li><b>Gender:</b> ${req.body.Gender}</li>
+        <li><b>Country of nationality:</b> ${req.body.contryNationality}</li>
+        <li><b>Country of residence:</b> ${req.body.contryLive}</li>
+        <li><b>Phone number:</b> +${req.body.phoneNumber}</li>
+      <li><b>Gender:</b> ${req.body.Gender}</li>
+      <li><b>Goals:</b> ${req.body.Goals}</li>
         
 				</ul>
 				
