@@ -218,9 +218,8 @@ const CreateNewStudent = async (user) => {
   //
   //
   const resdatos = await newStudent.save();
-  console.log("RES DATOS NEW STUDENT", resdatos);
+  // console.log("RES DATOS NEW STUDENT", resdatos);
   AddDataToCalendar(resdatos);
-
   await DeleteCache(resCache.idCache);
 
   return {

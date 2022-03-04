@@ -19,7 +19,7 @@ router.get("/democlass", verifyToken, VerifyDemoClass);
  */
 router.get("/getdataDemoclass", verifyToken, GetDataUser);
 // >>---------------->> 👀 POST 👀  <<---------------------<<
-router.post("/addDataDemo", verifyToken, AddDataUserDemoclass);
+router.post("/addDataDemo", AddDataUserDemoclass);
 router.post("/addDataDemoOne", verifyToken, AddDataUserOneData);
 
 module.exports = router;

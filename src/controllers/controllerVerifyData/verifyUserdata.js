@@ -22,7 +22,7 @@ const VerifyDemoClass = async (req, res) => {
       .json({ success: false, message: "Token not found !" });
   // console.log("req id", idToken);
   const result = await User.findById(idToken);
-
+  console.log(result);
   const { democlass } = result;
   return res.status(200).json({
     success: true,
@@ -35,6 +35,7 @@ const GetDataUser = async (req, res, next) => {
   const id = req.id;
   const result = await User.findById(id).select("-password");
   const { email, FirstName, democlass, Gender, Country, numberCell } = result;
+  console.log(result);
   if (democlass.requireDemo) {
     return res.status(201).json({
       status: true,
@@ -45,8 +46,8 @@ const GetDataUser = async (req, res, next) => {
       },
     });
   }
-  console.log(Gender, Country, numberCell);
-  if (!Gender || !Country || !numberCell) {
+  if (result.googleAuth) {
+    console.log("Google Auth");
     return res.status(200).json({
       status: true,
       message: "all ok",
@@ -54,10 +55,10 @@ const GetDataUser = async (req, res, next) => {
         addData: 3,
         democlass: democlass.requireDemo, // return false
         email,
-        FirstName,
       },
     });
   }
+
   return res.status(200).json({
     status: true,
     message: "all ok",
@@ -71,51 +72,67 @@ const GetDataUser = async (req, res, next) => {
 };
 
 const AddDataUserDemoclass = async (req, res, next) => {
-  const { Gender, Phone, Country } = req.body;
-  const id = req.id;
-  if (!Gender || !Phone || !Country || !id)
-    return res.status(400).json({
-      error: true,
-      status: false,
-      message: "Data not found",
-    });
-  try {
-    const user2 = await User.findById(id);
-    if (user2.democlass.requireDemo) {
-      return res.status(400).json({
-        error: true,
-        status: false,
-        message: "You have already taken one free class",
-      });
-    }
-    const user = await User.findByIdAndUpdate(
-      { _id: id },
-      {
-        democlass: {
-          requireDemo: true,
-        },
-        Gender,
-        numberCell: Phone,
-        Country,
-      },
-      {
-        useFindAndModify: false,
-      }
-    );
-    if (!user)
-      return res.status(500).json({
-        error: true,
-        status: false,
-        message: "Erro to server",
-      });
+  // const { Gender, Phone, Country, } = req.body;
 
+  console.log(req.body);
+  // if (!Gender || !Phone || !Country | )
+  //   return res.status(400).json({
+  //     error: true,
+  //     status: false,
+  //     message: "Data not found",
+  //   });
+  try {
     await transporter.sendMail({
-      from: "Luis Zapata 😎 <jlzyjose@gmail.com>",
-      to: "ingenioecuador.plus@gmail.com",
-      subject: "Hello ✔",
-      text: "esto es una prueba desde ingenio languages",
-      html: "<b>Hello world?</b>", // html body
+      from: "Ingenio Languages <ingeniolanguages.team@gmail.com>",
+      to: "ingeniolanguages.team@gmail.com",
+      subject: "Free demo class requested",
+      // text: "esto es una prueba desde ingenio languages",
+      html: `<!--Copia desde aquí--> 
+<table style="max-width: 600px; padding: 10px; margin:0 auto; border-collapse: collapse;">
+
+	<tr>
+		<td style="background-color: #ecf0f1">
+			<div style="color: #34495e; margin: 4% 10% 2%; text-align: justify;font-family: sans-serif">
+				<h2 style="color: #2563EB; margin: 0 0 7px">Hi!</h2>
+        	<br/>
+				<p style="margin: 2px; font-size: 15px">A student has requested a free demo class. See all their information below to contact the student promptly.</p>
+
+				<br/>
+				<br/>
+        <span style="margin-left:40px; font-size: 20px; " >Information</span>
+				<ul style="font-size: 15px;  margin: 10px 0">
+        <li><b>First Name:</b> ${req.body.FirstName}</li>
+        <li><b>Last Name:</b> ${req.body.LastName}</li>
+        <li><b>Age</b> ${req.body.age}</li>
+        <li><b>E-mail:</b> ${req.body.email}</li>
+        <li><b>AboutUs</b> ${req.body.AboutUs}</li>
+        <li><b>Language</b> ${req.body.Language}</li>
+        <li><b>Level:</b> ${req.body.Level}</li>
+        <li><b>Country Nationality:</b> ${req.body.contryNationality}</li>
+        <li><b>Number Cell:</b> +${req.body.phoneNumber}</li>
+        <li><b>Gender:</b> ${req.body.Gender}</li>
+        
+				</ul>
+				
+				<br/>
+				<br/>
+			
+				<p style="color: #b3b3b3; font-size: 12px; text-align: center;margin: 30px 0 0">www.ingeniolanguages.com</p>
+			</div>
+		</td>
+	</tr>
+</table>
+<!--hasta aquí-->`, // html body
     });
+
+    // <div style="width: 100%; text-align: center">
+    //   <a
+    //     style="text-decoration: none; border-radius: 5px; padding: 11px 23px; color: white; background-color: #3498db"
+    //     href="http://localhost:3000/siginforgotpassword"
+    //   >
+    //     Sign in at Ingenio Languages website
+    //   </a>
+    // </div>;
 
     return res.status(200).json({
       error: false,
