@@ -1,5 +1,6 @@
 const FeedBackModel = require("../../models/feecback");
 const StudentModel = require("../../models/student");
+const SummaryModel = require("../../models/Sumary/Sumary");
 
 const addFeedBack = async (req, res) => {
   const {
@@ -51,8 +52,38 @@ const addFeedBack = async (req, res) => {
   });
 };
 
+const getFeddBack = async (req, res) => {
+  const { _id } = req.params;
+  console.log(_id);
+  try {
+    const feedBack = await SummaryModel.find({
+      id_Student: _id,
+    }).populate([
+      {
+        path: "id_Teacher",
+        model: "User",
+        select: "picture FirstName -_id",
+      },
+      {
+        path: "id_Course",
+        model: "Courses",
+        select: "nameCourse",
+      },
+    ]);
+    return res.status(200).json({
+      message: "all good",
+      error: false,
+      success: false,
+      feedBack,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 module.exports = {
   addFeedBack,
+  getFeddBack,
 };
 
 async function DeleteOneClass(id_student) {

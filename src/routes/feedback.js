@@ -10,4 +10,10 @@ router.post(
   controller.addFeedBack
 );
 
+router.get(
+  "/teacher/summary/getSummary/:_id",
+  [middleware.verifyToken, middleware.verifyIsTeacher],
+  controller.getFeddBack
+);
+
 module.exports = router;
