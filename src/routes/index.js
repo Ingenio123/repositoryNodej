@@ -64,9 +64,11 @@ const {
   ClientPay,
   datafastResultEnd,
 } = require("../controllers/payController");
+
 const {
   CreateCodeDescuento,
   CodeDescuento,
+  GetAllCupons,
 } = require("../controllers/CodeDescuento/CodeDescuento");
 
 /**
@@ -74,6 +76,8 @@ const {
              GET
   --------------------------
  */
+router.get("/getCuponCode", GetAllCupons);
+
 router.get("/", (req, res) => {
   res.render("index", {
     logged: false,

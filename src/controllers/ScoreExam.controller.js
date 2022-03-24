@@ -237,19 +237,22 @@ module.exports = {
       // aqui pasa el id del student
 
       // console.log(data);
-      if (!data)
-        return res.status(400).json({
-          success: false,
-          error: true,
-          message: "Not content ",
-        });
+      // if (!data)
+      //   return res.status(200).json({
+      //     message: "All Good",
+      //     success: true,
+      //     data: {
+      //       scoreExam: data,
+      //     },
+      //   });
+      console.log(data);
       return res.status(200).json({
-        message: "All Good",
+        message: "All Good",  
         success: true,
         data: {
           scoreExam: data,
         },
-      }); 
+      });
     } catch (err) {
       console.log(err);
       return res.status(500).json({});

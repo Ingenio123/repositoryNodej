@@ -99,6 +99,7 @@ const CreateCodeDescuento = async (req, res) => {
     }
   }
 };
+
 const DeleteCode = (req, res) => {
   return res.status(200).json({
     sucess: true,
@@ -106,8 +107,17 @@ const DeleteCode = (req, res) => {
   });
 };
 
+const GetAllCupons = async (req, res) => {
+  const allCupons = await Code.find();
+  // console.log(allCupons);
+  return res.status(200).json({
+    codes: allCupons,
+  });
+};
+
 module.exports = {
   CodeDescuento,
   CreateCodeDescuento,
   DeleteCode,
+  GetAllCupons,
 };

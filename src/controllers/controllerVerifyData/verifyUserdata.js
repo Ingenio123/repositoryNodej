@@ -74,7 +74,7 @@ const GetDataUser = async (req, res, next) => {
 const AddDataUserDemoclass = async (req, res, next) => {
   // const { Gender, Phone, Country, } = req.body;
 
-  console.log(req.body);
+  // console.log(req.body);
   // if (!Gender || !Phone || !Country | )
   //   return res.status(400).json({
   //     error: true,
