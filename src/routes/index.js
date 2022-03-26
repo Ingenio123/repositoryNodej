@@ -69,6 +69,7 @@ const {
   CreateCodeDescuento,
   CodeDescuento,
   GetAllCupons,
+  DeleteCode,
 } = require("../controllers/CodeDescuento/CodeDescuento");
 
 /**
@@ -232,5 +233,6 @@ router.put("/data/updateNewPassword", verifyToken, UpdateNewPassword);
  */
 router.delete("/data/deletedFlag/:_id", deleteFlag);
 router.delete("/data/delete/teacher/:_id", deleteTeacher);
+router.delete("/data/delete/code/:_id", DeleteCode);
 
 module.exports = router;
