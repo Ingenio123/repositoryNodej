@@ -157,11 +157,12 @@ module.exports = {
   addFlagtoTeachers: async (req, res, next) => {
     const { _id } = req.params;
     const { FlagId } = req.body;
+    console.log(FlagId);
 
     await Teachers.findByIdAndUpdate(
       _id,
       {
-        $push: { flags: FlagId },
+        $set: { flags: FlagId },
       },
       {
         useFindAndModify: false,
