@@ -1,5 +1,6 @@
 const Teachers = require("../models/teachers");
 const Courses = require("../models/courses");
+const Typematerials = require("../models/TypeMaterial");
 
 const path = require("path");
 const { remove } = require("fs-extra");
@@ -99,17 +100,14 @@ module.exports = {
   updateImgProfile: async (req, res, next) => {
     const _id = req.params.id;
     const { imageTeacher } = req.files;
-
+    // console.log(imageTeacher);
     if (!imageTeacher)
       return res.stus(401).json({ succes: false, message: "img not foud :( " });
 
     const publicId = await Teachers.findById(_id);
-
     // eliminar una img de cloudinary
     await uploader.destroy(publicId.public_id);
-
     const result = await uploader.upload(imageTeacher.tempFilePath);
-
     await Teachers.findByIdAndUpdate(
       _id,
       {
@@ -239,5 +237,13 @@ module.exports = {
         message: "Error",
       });
     }
+  },
+  getTypeMaterials: async (req, res, next) => {
+    const materials = await Typematerials.find();
+    // console.log(materials);
+    return res.status(200).json({
+      success: true,
+      materials,
+    });
   },
 };

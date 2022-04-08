@@ -12,6 +12,7 @@ const {
   teacherReview,
   addCalendarTeacher,
   deleteTeacher,
+  getTypeMaterials,
 } = require("../controllers/teachersController");
 
 const {
@@ -111,6 +112,12 @@ router.get("/calendly", (req, res) => {
 router.get("/teacher", (req, res, next) => {
   res.render("teacher");
 });
+router.get(
+  "/teacher/getmaterials",
+  verifyToken,
+  verifyIsTeacher,
+  getTypeMaterials
+);
 
 router.get("/data/getAllTeachers", getAllTeachers); //get all teachers
 

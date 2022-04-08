@@ -7,7 +7,7 @@ const passport = require("passport");
 const session = require("express-session");
 const fileupload = require("express-fileupload");
 const clouddinary = require("cloudinary").v2;
-const { createRoles } = require("./libs/initialSetup");
+const { createRoles, createTypeMaterial } = require("./libs/initialSetup");
 const db = require("./connectDB");
 const cors = require("cors");
 require("dotenv").config();
@@ -16,6 +16,8 @@ const app = express();
 db.conect_db();
 
 createRoles();
+createTypeMaterial();
+//
 require("./authGoogle");
 
 function isLoggedIn(req, res, next) {
@@ -126,6 +128,7 @@ app.use(require("./routes/summay"));
 app.use(require("./routes/verifyData"));
 app.use("/feedback", require("./routes/feedback"));
 app.use("/v1", require("./routes/ScoreExam"));
+app.use("/v1", require("./routes/materials.routes"));
 // static folder
 app.use(express.static(path.join(__dirname, "public")));
 
