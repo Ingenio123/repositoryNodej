@@ -2,11 +2,6 @@ const { Schema, model } = require("mongoose");
 
 const materials = new Schema(
   {
-    id_teacher: {
-      type: Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
     id_student: {
       type: Schema.Types.ObjectId,
       ref: "Student",
@@ -30,6 +25,11 @@ const materials = new Schema(
             },
             levels_materials: [
               {
+                id_teacher: {
+                  type: Schema.Types.ObjectId,
+                  ref: "User",
+                  required: true,
+                },
                 name_material: {
                   type: String,
                   default: "not name",

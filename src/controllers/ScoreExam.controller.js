@@ -15,7 +15,8 @@ module.exports = {
       name_level = level[0].level[0].name_level,
       name_sublevel = level[0].level[0].subLevel[0].name_sublevel,
       score = level[0].level[0].subLevel[0].score;
-    console.log(JSON.stringify(level));
+
+    // console.log(JSON.stringify(level));
     // return res.status(200).json({
     //   message: "",
     // });
@@ -247,7 +248,7 @@ module.exports = {
       //   });
       console.log(data);
       return res.status(200).json({
-        message: "All Good",  
+        message: "All Good",
         success: true,
         data: {
           scoreExam: data,
