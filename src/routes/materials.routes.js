@@ -7,6 +7,13 @@ router.get(
   middlewares.verifyIsTeacher,
   Controller.GetMaterialForIdStudent
 );
+//
+router.get(
+  "/data/get/materials/:language",
+  middlewares.verifyToken,
+  middlewares.verifyIsStudent,
+  Controller.GetMaterialTokenStudent
+);
 
 router.post(
   "/data/add/materials",

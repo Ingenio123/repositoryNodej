@@ -128,8 +128,19 @@ const GetMaterialForIdStudent = async (req, res, next) => {
   });
 };
 
+const GetMaterialTokenStudent = async (req, res, next) => {
+  const idStudent = req.id;
+  let { language } = req.params; // language => id del language que tiene comprado
+
+  console.log(idStudent, language);
+  return res.status(200).json({
+    messsage: "all good",
+    error: false,
+  });
+};
 module.exports = {
   AddMaterial,
   DeleteMaterial,
   GetMaterialForIdStudent,
+  GetMaterialTokenStudent,
 };
