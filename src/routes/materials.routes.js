@@ -9,7 +9,7 @@ router.get(
 );
 //
 router.get(
-  "/data/get/materials/:language",
+  "/data/get/materials/student/:id_student/:id_language",
   middlewares.verifyToken,
   middlewares.verifyIsStudent,
   Controller.GetMaterialTokenStudent
