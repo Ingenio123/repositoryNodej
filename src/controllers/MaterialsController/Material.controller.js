@@ -1,4 +1,5 @@
 const Materials = require("../../models/Materials/Material");
+const Student = require("../../models/student");
 
 const AddMaterial = async (req, res, next) => {
   //   const {} = req.body;
@@ -96,57 +97,69 @@ const AddMaterial = async (req, res, next) => {
 
 const DeleteMaterial = async (req, res, next) => {
   const { id_material, id_student, level_material, kids, idiom } = req.body;
-  const material = await Materials.findOne({
-    id_student: id_student,
-  });
-  if (!material) {
+  if (!id_material || !id_student || !level_material || !idiom) {
     return res.status(400).json({
       error: true,
-      message: "Material not exist",
+      message: "Data incomplete",
     });
   }
   //
-  // console.log(material);
-  let datosSearch = material.languages
-    .filter((e) => e.kids == kids && e.idiom == idiom)
-    .pop();
-  //
-  console.log(datosSearch);
-  if (datosSearch.length <= 0) {
-    return res.status(400).json({
-      error: true,
-      message: "Languages not exist",
-    });
-  }
-  //
-  let datos = await Materials.findOneAndUpdate(
-    {
+  try {
+    const material = await Materials.findOne({
       id_student: id_student,
-    },
-    {
-      $pull: {
-        "languages.$[index0].material.$[index1].levels_materials._id":
-          id_material,
-      },
-    },
-    {
-      new: true,
-      useFindAndModify: false,
-      arrayFilters: [
-        { "index0.idiom": idiom, "index0.kids": kids },
-        { "index1.level_material": level_material },
-      ],
+    });
+    //
+    if (!material) {
+      return res.status(400).json({
+        error: true,
+        message: "Material not exist",
+      });
     }
-  );
-  //
-  console.log(datos);
-  // await
-  // id ->  del material que se va eliminar.
-  // await Materials.findById();
+    //
+    let datosSearch = material.languages
+      .filter((e) => e.kids == kids && e.idiom == idiom)
+      .pop();
+    //
+    console.log(datosSearch);
+    //
+    if (datosSearch.length <= 0) {
+      return res.status(400).json({
+        error: true,
+        message: "Languages not exist",
+      });
+    }
+    //
+    await Materials.findOneAndUpdate(
+      {
+        id_student: id_student,
+      },
+      {
+        $pull: {
+          "languages.$[index0].material.$[index1].levels_materials": {
+            _id: id_material,
+          },
+        },
+      },
+      {
+        new: true,
+        useFindAndModify: false,
+        arrayFilters: [
+          { "index0.idiom": idiom, "index0.kids": kids },
+          { "index1.level_material": level_material },
+        ],
+      }
+    );
 
-  return res.status(200).json({
-    message: "Delete success",
-  });
+    return res.status(200).json({
+      message: "Delete success",
+      id_material: id_material,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      error: true,
+      message: "Error validate data",
+    });
+  }
 };
 
 const GetMaterialForIdStudent = async (req, res, next) => {
@@ -167,13 +180,38 @@ const GetMaterialTokenStudent = async (req, res, next) => {
   let { id_language, id_student } = req.params; // language => id del language que tiene comprado
 
   // console.log(id_student, id_language);
-  let datos = await Materials.findOne({
+  let datos = Materials.findOne({
     id_student: id_student,
   });
-  // console.log(datos);
+  let dataStudent = Student.findById({ _id: id_student });
+
+  let datosFinally = await Promise.all([datos, dataStudent]);
+  //
+  //
+  let datosCourses = datosFinally[1].courses.map((e) => {
+    return {
+      kids: e.kids,
+      idiom: e.idiom,
+      _id: e._id,
+    };
+  });
+
+  //
+
+  let right = [];
+  datosFinally[0].languages.filter((d) => {
+    datosCourses.filter((s) => {
+      if (d.kids === s.kids && d.idiom === s.idiom) {
+        d._id = s._id;
+        return right.push(d);
+      }
+    });
+  });
+
   return res.status(200).json({
     messsage: "all good",
     error: false,
+    data: right,
   });
 };
 
