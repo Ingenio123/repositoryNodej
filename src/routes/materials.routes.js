@@ -7,6 +7,12 @@ router.get(
   middlewares.verifyIsTeacher,
   Controller.GetMaterialForIdStudent
 );
+router.get(
+  "/data/get/materials/refresh/:idStudent",
+  middlewares.verifyToken,
+  middlewares.verifyIsTeacher,
+  Controller.GetMaterialForIdStudent
+);
 //
 router.get(
   "/data/get/materials/student/:id_student/:id_language",
