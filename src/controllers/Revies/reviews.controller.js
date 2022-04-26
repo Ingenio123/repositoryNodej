@@ -1,5 +1,32 @@
+const { uploader } = require("cloudinary").v2;
+const Review = require("../../models/Reviews/revies.model");
+const { remove } = require("fs-extra");
+const path = require("path");
 module.exports = {
-  createReviews: (req, res, next) => {
-    // const {} = req.body;
+  createReviews: async (req, res, next) => {
+    const { countryIso, name_user, languages_is_learning, description } =
+      req.body;
+    const { imageUser } = req.files;
+    if (!imageUser)
+      return res.status(400).json({
+        message: "Error not image",
+      });
+
+    const result = await uploader.upload(imageUser.tempFilePath);
+
+    const ReviewObject = new Review({
+      countryIso,
+      name_user,
+      languages_is_learning,
+      description,
+      url_image: result.secure_url,
+    });
+    await ReviewObject.save();
+    await remove(path.resolve("./tmp"));
+
+    return res.status(201).json({
+      success: true,
+      message: "Create Successfully",
+    });
   },
 };
