@@ -5,5 +5,5 @@ router.get("/data/get/reviews", ReviewController.getReviews);
 
 router.post("/data/add/reviews", ReviewController.createReviews);
 
-router.put("/data/delete/review", ReviewController.deleteReview);
+router.put("/data/delete/review/:id", ReviewController.deleteReview);
 module.exports = router;
