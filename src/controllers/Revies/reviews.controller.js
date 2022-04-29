@@ -29,4 +29,21 @@ module.exports = {
       message: "Create Successfully",
     });
   },
+  getReviews: async (req, res, next) => {
+    let datosReviews = await Review.find();
+    return res.status(200).json({
+      reviews: datosReviews,
+      message: "all good",
+    });
+  },
+  deleteReview: async (req, res, next) => {
+    const { id } = req.params;
+    let deleteReview = await Review.findByIdAndDelete({ _id: id });
+    if (deleteReview) {
+      return res.status(200).json({
+        message: "all good",
+        error: false,
+      });
+    }
+  },
 };
