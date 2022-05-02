@@ -130,6 +130,7 @@ app.use("/feedback", require("./routes/feedback"));
 app.use("/v1", require("./routes/ScoreExam"));
 app.use("/v1", require("./routes/materials.routes"));
 app.use("/v1", require("./routes/revies.routes"));
+app.use("/v1", require("./routes/promo.routes"));
 // static folder
 app.use(express.static(path.join(__dirname, "public")));
 

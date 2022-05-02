@@ -38,6 +38,7 @@ module.exports = {
   },
   deleteReview: async (req, res, next) => {
     const { id } = req.params;
+    // console.log("ID" + id);
     let deleteReview = await Review.findByIdAndDelete({ _id: id });
     if (deleteReview) {
       return res.status(200).json({
