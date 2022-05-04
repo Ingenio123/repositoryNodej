@@ -21,6 +21,9 @@ const NewSchemaPromo = new mongodb.Schema({
     type: String,
     required: true,
   },
+  promo_publid_id: {
+    type: String,
+  },
 });
 
 module.exports = mongodb.model("Promo", NewSchemaPromo);

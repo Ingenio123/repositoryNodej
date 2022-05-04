@@ -15,13 +15,14 @@ module.exports = {
     const { image } = req.files;
 
     const resultUploadImage = await uploader.upload(image.tempFilePath);
-
+    // console.log(resultUploadImage);
     const PromoNew = new PromoModel({
       promo_title,
       promo_description,
       promo_code,
       promo_conditons,
       promo_url_picture: resultUploadImage.secure_url,
+      promo_publid_id: resultUploadImage.public_id,
     });
     await PromoNew.save();
     await remove(path.resolve("./tmp"));
@@ -29,6 +30,7 @@ module.exports = {
       error: false,
       success: true,
       message: "Create success",
+      promos: PromoNew,
     });
   },
 };
