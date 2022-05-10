@@ -163,13 +163,15 @@ const signInUser = async (req, res) => {
   const userData = { id: user._id, email: user.email };
   // generate first token
   const token = await jwt.sign(userData, process.env.JWT_SECRET, {
-    expiresIn: 60 * 60 * 24,
+    expiresIn: 60,
   });
+  // expiresIn: 60 * 60 * 24,
 
   //refresh token
   const refresh_token = await jwt.sign(userData, process.env.JWT_REFRESH, {
-    expiresIn: 60 * 60 * 24,
+    expiresIn: 60,
   });
+  // expiresIn: 60 * 60 * 24,
   //
   const { name } = user.roles.pop();
   const { picture, _id, username } = user;

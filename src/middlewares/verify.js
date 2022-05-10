@@ -15,7 +15,7 @@ exports.verifyToken = async (req, res, next) => {
     req.id = decode.id;
     next();
   } catch (error) {
-    console.log(error);
+    console.log("Token Expirared / error token");
     return res.status(400).json({
       error: true,
       expired: true,

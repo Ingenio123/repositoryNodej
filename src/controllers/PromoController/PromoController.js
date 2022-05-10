@@ -33,4 +33,13 @@ module.exports = {
       promos: PromoNew,
     });
   },
+  getPromos: async (req, res, next) => {
+    // const {} = req.body;
+    let promos = await PromoModel.find();
+    return res.status(200).json({
+      error: false,
+      message: "all good",
+      promos,
+    });
+  },
 };
