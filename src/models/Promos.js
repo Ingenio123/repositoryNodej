@@ -21,6 +21,14 @@ const NewSchemaPromo = new mongodb.Schema({
     type: String,
     required: true,
   },
+  promo_active: {
+    type: Boolean,
+    default: false,
+  },
+  promo_type_template: {
+    type: Number,
+    default: 0,
+  },
   promo_publid_id: {
     type: String,
   },

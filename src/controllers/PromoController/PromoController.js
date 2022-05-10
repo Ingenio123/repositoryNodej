@@ -42,4 +42,75 @@ module.exports = {
       promos,
     });
   },
+  deletePromo: async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      if (!id)
+        return res
+          .status(400)
+          .json({ error: true, message: "Params id not found" });
+
+      let success = await PromoModel.findByIdAndDelete({ _id: id });
+      await uploader.destroy(success.promo_publid_id);
+      if (!success)
+        return res.status(400).json({
+          error: true,
+          message: "Promo not found,maybe the id params is not correct",
+        });
+      return res.status(200).json({
+        error: false,
+        message: "promo removed successfully",
+      });
+    } catch (err) {
+      res.status(500).json({
+        error: true,
+        message: "something fail in server",
+      });
+      throw err;
+    }
+  },
+  activePromo: async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const { template } = req.query;
+      console.log(id);
+      console.log(template);
+      let activePromo = await PromoModel.find({ promo_active: true });
+      if (activePromo.length === 0) {
+        await PromoModel.findByIdAndUpdate(
+          { _id: id },
+          { $set: { promo_active: true, promo_type_template: template } }
+        );
+      }
+      if (activePromo.length > 0) {
+        let { _id } = activePromo[0];
+        if (_id !== id) {
+          await PromoModel.findByIdAndUpdate(
+            { _id: _id },
+            {
+              $set: { promo_active: false },
+            }
+          );
+        }
+
+        await PromoModel.findByIdAndUpdate(
+          { _id: _id },
+          {
+            $set: { promo_type_template: template },
+          }
+        );
+      }
+
+      return res.status(200).json({
+        error: false,
+        message: "all good",
+      });
+    } catch (err) {
+      res.status(500).json({
+        error: true,
+        message: "something fail in server",
+      });
+      throw err;
+    }
+  },
 };
