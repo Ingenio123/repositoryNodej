@@ -149,4 +149,18 @@ module.exports = {
       throw err;
     }
   },
+  getPromoActive: async (req, res, next) => {
+    try {
+      let promo = await PromoModel.findOne({ promo_active: true });
+      console.log(promo);
+      return res.status(200).json({
+        error: false,
+        promo,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        error: true,
+      });
+    }
+  },
 };
