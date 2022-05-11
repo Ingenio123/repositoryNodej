@@ -93,7 +93,7 @@ module.exports = {
       }
       //
       let { _id } = activePromo[0];
-      let promo_template = activePromo[0]?.promo_type_template;
+      let promo_template = activePromo[0].promo_type_template;
       console.log(id + " --- " + _id);
       //
       //
