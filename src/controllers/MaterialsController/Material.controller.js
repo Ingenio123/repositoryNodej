@@ -168,7 +168,7 @@ const GetMaterialForIdStudent = async (req, res, next) => {
     id_student: idStudent,
   }).populate("languages.material.levels_materials.type_Material");
   // .select("-__v -createdAt -updatedAt");
-  // console.log(materialsData);
+  console.log(materialsData);
   return res.status(200).json({
     message: "All good",
     materials: materialsData,
@@ -182,7 +182,8 @@ const GetMaterialTokenStudent = async (req, res, next) => {
   // console.log(id_student, id_language);
   let datos = Materials.findOne({
     id_student: id_student,
-  });
+  }).populate("languages.material.levels_materials.type_Material");
+  // .populate(); //type_Material
   let dataStudent = Student.findById({ _id: id_student });
 
   let datosFinally = await Promise.all([datos, dataStudent]);
