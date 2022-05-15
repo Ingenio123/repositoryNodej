@@ -105,7 +105,6 @@ const UpdateStudent = async (dataStudent, userData) => {
   const datafilter = data.courses
     .filter((e) => e.idiom === Datos.idiom && e.kids === Datos.kids)
     .pop();
-  console;
   const lessonTotal = datafilter.lessonTotal;
   await UpdateCourseExistente(userData, Datos, lessonTotal);
 
@@ -136,6 +135,7 @@ const UpdateCourseExistente = async (
   // console.log("Datos" + JSON.stringify(Datos));
   // console.log("Num LessonAnterior", numLessonAnterior);
   let numTotalLesson = parseInt(Datos.lesson) + parseInt(numLessonAnterior);
+  console.log("############# DATOS ##################### ", Datos);
   await Student.findOneAndUpdate(
     {
       email: email,
