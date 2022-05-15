@@ -16,9 +16,12 @@ exports.verifyToken = async (req, res, next) => {
     next();
   } catch (error) {
     console.log("Token Expirared / error token");
-    return res.status(400).json({
+    // let URL_CLIENT = process.env.URL_CLIENT;
+    // return res.redirect(`${URL_CLIENT}/loginRedirect`);
+    return res.status(498).json({
       error: true,
       expired: true,
+      url: process.env.URL_CLIENT,
       message: "expired token / token mal format",
     });
   }
