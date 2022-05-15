@@ -32,14 +32,19 @@ module.exports = {
         { id_Student: student._id },
         "content kids -_id"
       )
-        .populate({
-          path: "id_Teacher",
-          select: "picture email FirstName  -_id",
-        })
-        .populate({
-          path: "id_Course",
-          select: "nameCourse -_id",
-        });
+        .populate([
+          {
+            path: "id_Teacher",
+            model: "User",
+            select: "picture FirstName -_id",
+          },
+          {
+            path: "id_Course",
+            model: "Courses",
+            select: "nameCourse",
+          },
+        ])
+        .sort({ _id: -1 });
       const datosfinally = dataStudent.map((item) => {
         return {
           kids: item.kids,
@@ -79,8 +84,21 @@ module.exports = {
     const studentQuery = await Student.findOne({ email: user.email });
     const summary = await SummaryClass.find({
       id_Student: studentQuery._id,
-    }).populate("id_Course id_Teacher ");
-    // console.log(summary);
+    })
+      .populate([
+        {
+          path: "id_Teacher",
+          model: "User",
+          select: "picture FirstName -_id",
+        },
+        {
+          path: "id_Course",
+          model: "Courses",
+          select: "nameCourse",
+        },
+      ])
+      .sort({ _id: -1 });
+    console.log(summary);
 
     const datos = summary.filter((item) => {
       return item.id_Course.nameCourse === language;
