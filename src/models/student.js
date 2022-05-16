@@ -1,27 +1,5 @@
-const { Schema, model } = require("mongoose");
-const { stringify } = require("qs");
+const { Schema, model, Query } = require("mongoose");
 
-// const studentSchema = new Schema(
-//   {
-//     FirstName: {
-//       type: String,
-//     },
-//     age: {
-//       type: Number,
-//     },
-//     updatedBy: {
-//       type: Schema.Types.ObjectId,
-//     },
-//     email: {
-//       type: String,
-//     },
-//     NumberCellPhone: {
-//       type: Number,
-//     },
-//     courses: [],
-//   },
-//   { timestamps: true }
-// );
 const studentSchema = new Schema(
   {
     FirstName: {
@@ -106,5 +84,5 @@ const studentSchema = new Schema(
   },
   { timestamps: true }
 );
-studentSchema.plugin(require("mongoose-autopopulate"));
+
 module.exports = model("Student", studentSchema);

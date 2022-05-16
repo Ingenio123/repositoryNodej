@@ -41,4 +41,8 @@ const SumarySchema = new Schema(
   { timestamps: true }
 );
 
+// SumarySchema.pre("update", async function (next, done) {
+//   let self = this;
+// });
+
 module.exports = model("Summary", SumarySchema);

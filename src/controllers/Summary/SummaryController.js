@@ -131,9 +131,11 @@ module.exports = {
   // ###################################################### //
   SummaryPost: async (req, res) => {
     try {
+      console.log("LESSONS_SUMMARY ");
       const idTeacher = req.id;
 
       const { SummaryInput, Comments, idiom, email, date, kids } = req.body;
+      console.log("REQ BODY", req.body);
 
       if (!SummaryInput || !Comments || !idiom || !email || !date) {
         return res.status(400).json({
@@ -147,8 +149,14 @@ module.exports = {
       // console.log("id user req.id: \t" + req.id);
       // run two asynchronous processes
       const resp = await Promise.all([StudentQuery, IdiomQuery]);
-      // console.log(resp);
+      console.log("############ PROMISE ALL ##############", resp);
       const [student, course] = resp;
+      console.log(
+        "#### STUDENT ########",
+        student,
+        "########## COURSE ############",
+        course
+      );
       // console.log(student.courses); // student tenemos el object del student
       // console.log("Id student: " + student._id);
       // console.log("Id course: " + course._id);
@@ -158,7 +166,7 @@ module.exports = {
         (elem) => elem.idiom === idiom && elem.kids === kids
       );
 
-      // console.log("Datos Student son %s values: ", datosS);
+      console.log("Datos Student son %s values: ", datosS);
       //
       if (datosS.lessonTotal === 0) {
         return res.status(400).json({
@@ -166,23 +174,30 @@ module.exports = {
           expireLesson: true,
         });
       }
-
+      console.log("######### LESSON TOTAL ###########", datosS.lessonTotal);
       let total = datosS.lessonTotal - 1;
-
       const studenstQuery = await Student.findOneAndUpdate(
         {
           email: email,
-          "courses.idiom": idiom,
-          "courses.kids": datosS.kids,
-        },
-        {
-          $set: {
-            "courses.$.lessonTotal": total,
+          courses: {
+            $elemMatch: {
+              idiom: idiom,
+              kids: datosS.kids,
+            },
           },
         },
         {
+          $set: { "courses.$.lessonTotal": total },
+        },
+        {
+          new: true,
           useFindAndModify: false,
         }
+      );
+
+      console.log(
+        "########### SE REALIZO LA MODIFICAION #########",
+        studenstQuery
       );
 
       // ###########################################

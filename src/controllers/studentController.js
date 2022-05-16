@@ -98,6 +98,16 @@ module.exports = {
       path: "courses",
       populate: { path: "CourseData" },
     });
+    // console.log(QueryStudent.courses);
+    for (let i = 0; i < QueryStudent.courses.length; i++) {
+      // console.log(QueryStudent.courses[i]);
+      let dateExpires = QueryStudent.courses[i].expiresCours;
+      let dateActual = new Date();
+      console.log(dateActual);
+      if (dateActual > dateExpires) {
+        console.log("True");
+      }
+    }
 
     if (!QueryStudent)
       return res.status(200).json({ success: false, Student: [] });
