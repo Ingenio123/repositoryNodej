@@ -23,26 +23,18 @@ const ScoreExam = new Schema(
               type: String,
               require: true,
             },
-            subLevel: [
-              {
-                name_sublevel: {
-                  type: String,
-                  required: true,
-                },
-                score: {
-                  type: Number,
-                  default: 0,
-                },
-                id_teacher: {
-                  type: Schema.Types.ObjectId,
-                  ref: "User",
-                },
-                Date: {
-                  type: Date,
-                  default: Date.now(),
-                },
-              },
-            ],
+            Date: {
+              type: Date,
+              default: Date.now(),
+            },
+            id_teacher: {
+              type: Schema.Types.ObjectId,
+              ref: "User",
+            },
+            score: {
+              type: Number,
+              default: 0,
+            },
           },
         ],
       },

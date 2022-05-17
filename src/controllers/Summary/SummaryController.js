@@ -44,7 +44,7 @@ module.exports = {
             select: "nameCourse",
           },
         ])
-        .sort({ _id: -1 });
+        .sort({ "content.date": -1 });
       const datosfinally = dataStudent.map((item) => {
         return {
           kids: item.kids,

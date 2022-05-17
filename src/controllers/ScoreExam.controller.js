@@ -9,12 +9,13 @@ module.exports = {
       req.id
     );
     const { idStudent, level } = req.body;
+    console.log(JSON.stringify(level));
 
     const idiom = level[0].idiom,
       kids = level[0].kids,
       name_level = level[0].level[0].name_level,
-      name_sublevel = level[0].level[0].subLevel[0].name_sublevel,
-      score = level[0].level[0].subLevel[0].score;
+      score = level[0].level[0].score,
+      Date = level[0].level[0].Date;
 
     // console.log(JSON.stringify(level));
     // return res.status(200).json({
@@ -33,6 +34,7 @@ module.exports = {
         });
 
         if (found) {
+          console.log("FOUNDD");
           //third Query
 
           const NameLevel = await ScoreExam.findOne({
@@ -45,49 +47,47 @@ module.exports = {
           if (NameLevelFilter) {
             var SearchLevelRes = SearchLevel(NameLevelFilter, name_level);
             if (SearchLevelRes.access) {
-              var SearchSubLevelRes = SearhSubLevel(
-                SearchLevelRes.data.subLevel,
-                name_sublevel
-              );
-
-              if (SearchSubLevelRes.access) {
-                return res.status(400).json({
-                  message: "No se puede Add more Data here",
-                  error: true,
-                });
-              }
-              var datos = {
-                name_sublevel: name_sublevel,
-                score: score,
-                id_teacher: req.id,
-              };
-              console.log(datos);
-
+              // var SearchSubLevelRes = SearhSubLevel(
+              //   SearchLevelRes.data.subLevel,
+              //   name_sublevel
+              // );
+              // if (SearchSubLevelRes.access) {
+              //   return res.status(400).json({
+              //     message: "No se puede Add more Data here",
+              //     error: true,
+              //   });
+              // }
+              // var datos = {
+              //   name_sublevel: name_sublevel,
+              //   score: score,
+              //   id_teacher: req.id,
+              // };
+              // console.log(datos);
               // ############# AQUI SE AGREGA EL NUEVO SUBLEVEL ##################
-              await ScoreExam.findOneAndUpdate(
-                {
-                  id_student: idStudent,
-                  "Content.level.name_level": name_level,
-                },
-                {
-                  $push: {
-                    "Content.$[idex0].level.$[idex1].subLevel": datos,
-                  },
-                },
-                {
-                  new: true,
-                  useFindAndModify: false,
-                  arrayFilters: [
-                    { "idex0.idiom": idiom, "idex0.kids": kids },
-                    { "idex1.name_level": name_level },
-                  ],
-                }
-              );
-              return res.status(200).json({
-                message: "Add score sublevel",
-                error: false,
-                success: true,
-              });
+              // await ScoreExam.findOneAndUpdate(
+              //   {
+              //     id_student: idStudent,
+              //     "Content.level.name_level": name_level,
+              //   },
+              //   {
+              //     $push: {
+              //       "Content.$[idex0].level.$[idex1].subLevel": datos,
+              //     },
+              //   },
+              //   {
+              //     new: true,
+              //     useFindAndModify: false,
+              //     arrayFilters: [
+              //       { "idex0.idiom": idiom, "idex0.kids": kids },
+              //       { "idex1.name_level": name_level },
+              //     ],
+              //   }
+              // );
+              // return res.status(200).json({
+              //   message: "Add score sublevel",
+              //   error: false,
+              //   success: true,
+              // });
             }
             // ###########   AQUI SE AGREGA UN NUEVO LEVEL CON SU SUBLEVEL Y SU SCORE ############
             await ScoreExam.findOneAndUpdate(
@@ -100,12 +100,9 @@ module.exports = {
                 $push: {
                   "Content.$.level": {
                     name_level: name_level,
-                    subLevel: [
-                      {
-                        name_sublevel: name_sublevel,
-                        score: score,
-                      },
-                    ],
+                    score: score,
+                    id_teacher: req.id,
+                    Date: Date,
                   },
                 },
               }
@@ -132,12 +129,8 @@ module.exports = {
                 level: [
                   {
                     name_level: name_level,
-                    subLevel: [
-                      {
-                        name_sublevel: name_sublevel,
-                        score: score,
-                      },
-                    ],
+                    score: score,
+                    id_teacher: req.id,
                   },
                 ],
               },
@@ -147,18 +140,17 @@ module.exports = {
 
         return res.status(200).json({
           message: "Add new level con su idiom",
+          success: true,
         });
       }
-
       const newScoreExam = new ScoreExam({
         id_student: idStudent,
         Content: level,
-        id_teacher: req.id,
       });
 
       await newScoreExam.save();
 
-      return res.status(200).json({
+      return res.status(201).json({
         message: "Add new Score exam",
         success: true,
       });
@@ -235,18 +227,15 @@ module.exports = {
         .json({ success: false, error: true, message: "Id not found/null" });
     try {
       const data = await ScoreExam.findOne({ id_student: id_student });
-      // aqui pasa el id del student
 
-      // console.log(data);
-      // if (!data)
-      //   return res.status(200).json({
-      //     message: "All Good",
-      //     success: true,
-      //     data: {
-      //       scoreExam: data,
-      //     },
-      //   });
-      console.log(data);
+      if (!data)
+        return res.status(200).json({
+          message: "All Good",
+          success: true,
+          data: {
+            scoreExam: [],
+          },
+        });
       return res.status(200).json({
         message: "All Good",
         success: true,

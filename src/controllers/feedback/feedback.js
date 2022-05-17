@@ -71,7 +71,7 @@ const getFeddBack = async (req, res) => {
           select: "nameCourse",
         },
       ])
-      .sort({ _id: -1 });
+      .sort({ "content.date": -1 });
     return res.status(200).json({
       message: "all good",
       error: false,
