@@ -170,9 +170,8 @@ module.exports = {
     const idiom = level[0].idiom,
       kids = level[0].kids,
       name_level = level[0].level[0].name_level,
-      name_sublevel = level[0].level[0].subLevel[0].name_sublevel,
-      score = level[0].level[0].subLevel[0].score,
-      date = level[0].level[0].subLevel[0].Date;
+      score = level[0].level[0].score,
+      date = level[0].level[0].Date;
 
     console.log(JSON.stringify(level));
     let datefinally = date;
@@ -185,9 +184,8 @@ module.exports = {
         },
         {
           $set: {
-            "Content.$[idex0].level.$[idex1].subLevel.$[index2].score": score,
-            "Content.$[idex0].level.$[idex1].subLevel.$[index2].Date":
-              datefinally,
+            "Content.$[idex0].level.$[idex1].score": score,
+            "Content.$[idex0].level.$[idex1].Date": datefinally,
           },
         },
         {
@@ -196,7 +194,6 @@ module.exports = {
           arrayFilters: [
             { "idex0.idiom": idiom, "idex0.kids": kids },
             { "idex1.name_level": name_level },
-            { "index2.name_sublevel": name_sublevel },
           ],
         }
       );
