@@ -239,8 +239,8 @@ module.exports = {
   // ####################################################################
   SummaryPostScore: async (req, res) => {
     const id = req.id;
-    const { email, kids, idiom } = req.body;
-    console.log(email, kids, idiom);
+    const { email, kids, idiom, minus } = req.body;
+    // console.log(email, kids, idiom);
     if (!email || !idiom)
       return res.status(400).json({
         error: true,
@@ -255,8 +255,17 @@ module.exports = {
     const datoEncontrado = resp[0].courses.filter(
       (elem) => elem.idiom === idiom && elem.kids === kids
     );
-    var { score } = datoEncontrado[0];
-    const bandera = score + 5.55;
+    let { score } = datoEncontrado[0];
+    let bandera = 0;
+    if (!minus) {
+      // => false | null
+      bandera = 1;
+      score = score + 5.55;
+    }
+    if (bandera != 1) {
+      console.log("MINUS");
+      score = score - 5.55;
+    }
 
     try {
       await Student.findOneAndUpdate(
@@ -267,7 +276,7 @@ module.exports = {
         },
         {
           $set: {
-            "courses.$.score": bandera.toFixed(2),
+            "courses.$.score": score.toFixed(2),
           },
         },
         {
@@ -278,8 +287,15 @@ module.exports = {
       console.log(error);
       return res.status(500).json({});
     }
+    if (bandera != 1) {
+      return res.status(200).json({
+        message: "all good",
+        minus: true,
+      });
+    }
     return res.status(200).json({
       message: "all good",
+      minus: false,
     });
   },
 };

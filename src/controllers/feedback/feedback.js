@@ -63,7 +63,7 @@ const getFeddBack = async (req, res) => {
         {
           path: "id_Teacher",
           model: "User",
-          select: "picture FirstName -_id",
+          select: "picture FirstName _id",
         },
         {
           path: "id_Course",
@@ -83,9 +83,25 @@ const getFeddBack = async (req, res) => {
   }
 };
 
+const DeleteFeedback = async (req, res, next) => {
+  const { idSummary } = req.params;
+  try {
+    await SummaryModel.findByIdAndDelete({ _id: idSummary });
+    return res.status(200).json({
+      message: "All good",
+    });
+  } catch (err) {
+    return res.status(500).json({
+      error: true,
+      message: "Error to server",
+    });
+  }
+};
+
 module.exports = {
   addFeedBack,
   getFeddBack,
+  DeleteFeedback,
 };
 
 async function DeleteOneClass(id_student) {

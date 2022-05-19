@@ -16,4 +16,10 @@ router.get(
   controller.getFeddBack
 );
 
+router.delete(
+  "/teacher/summary/delete/:idSummary",
+  [middleware.verifyToken, middleware.verifyIsTeacher],
+  controller.DeleteFeedback
+);
+
 module.exports = router;
