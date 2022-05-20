@@ -86,7 +86,45 @@ const getFeddBack = async (req, res) => {
 const DeleteFeedback = async (req, res, next) => {
   const { idSummary } = req.params;
   try {
-    await SummaryModel.findByIdAndDelete({ _id: idSummary });
+    let feedbackDelete = await SummaryModel.findByIdAndDelete({
+      _id: idSummary,
+    }).populate([
+      {
+        path: "id_Teacher",
+        model: "User",
+        select: "picture FirstName _id",
+      },
+      {
+        path: "id_Course",
+        model: "Courses",
+        select: "nameCourse",
+      },
+    ]);
+    // console.log(feedbackDelete);
+    let { id_Student, kids } = feedbackDelete;
+    let { nameCourse } = feedbackDelete.id_Course;
+    let data = await StudentModel.findById({ _id: id_Student });
+    let { courses } = data;
+    let resfilter = courses.filter(
+      (e) => e.idiom == nameCourse && e.kids == e.kids
+    );
+
+    if (resfilter[0].lessonTotal < parseInt(resfilter[0].lesson)) {
+      await StudentModel.findByIdAndUpdate(
+        { _id: id_Student },
+        {
+          $set: {
+            "courses.$[condition].lessonTotal": resfilter[0].lessonTotal + 1,
+          },
+        },
+        {
+          arrayFilters: [
+            { "condition.kids": kids, "condition.idiom": nameCourse },
+          ],
+        }
+      );
+    }
+
     return res.status(200).json({
       message: "All good",
     });

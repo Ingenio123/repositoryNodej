@@ -134,15 +134,17 @@ module.exports = {
       console.log("LESSONS_SUMMARY ");
       const idTeacher = req.id;
 
-      const { SummaryInput, Comments, idiom, email, date, kids } = req.body;
+      const { SummaryInput, Comments, idiom, email, date, kids, time } =
+        req.body;
       console.log("REQ BODY", req.body);
 
-      if (!SummaryInput || !Comments || !idiom || !email || !date) {
+      if (!SummaryInput || !Comments || !idiom || !email || !date || !time) {
         return res.status(400).json({
           error: true,
           message: "Data incomplete.",
         });
       }
+      console.log(time);
       const StudentQuery = Student.findOne({ email: email });
       const IdiomQuery = Course.findOne({ nameCourse: idiom });
 
@@ -219,6 +221,7 @@ module.exports = {
           classSummary: SummaryInput,
           comments: Comments,
           date: date,
+          timeLesson: time,
         },
       });
 

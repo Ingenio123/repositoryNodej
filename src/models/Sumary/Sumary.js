@@ -36,6 +36,10 @@ const SumarySchema = new Schema(
           return new Date();
         },
       },
+      timeLesson: {
+        type: Number,
+        default: 0,
+      },
     },
   },
   { timestamps: true }
