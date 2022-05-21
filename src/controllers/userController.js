@@ -466,7 +466,7 @@ Please, remember that once you sign in with it, you will need to replace it with
 				<br/>
 				<br/>
 				<div style="width: 100%; text-align: center">
-					<a style="text-decoration: none; border-radius: 5px; padding: 11px 23px; color: white; background-color: #3498db" href="http://localhost:3000/siginforgotpassword">Sign in at Ingenio Languages website</a>	
+					<a style="text-decoration: none; border-radius: 5px; padding: 11px 23px; color: white; background-color: #3498db" href="https://www.ingeniolanguages.com/siginforgotpassword">Sign in at Ingenio Languages website</a>	
 				</div>
 				<p style="color: #b3b3b3; font-size: 12px; text-align: center;margin: 30px 0 0">www.ingeniolanguages.com</p>
 			</div>
