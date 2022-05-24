@@ -9,6 +9,7 @@ module.exports = {
       req.id
     );
     const { idStudent, level } = req.body;
+    console.log("@Este es el %s id del student", idStudent);
     console.log(JSON.stringify(level));
 
     const idiom = level[0].idiom,
@@ -22,16 +23,18 @@ module.exports = {
     //   message: "",
     // });
     try {
-      //Second Query
       const ExisteStudent = await ScoreExam.findOne({
         id_student: idStudent,
       });
+      console.log(ExisteStudent);
       if (ExisteStudent) {
+        console.log("#### EXISTE EL EXAMEN ####");
         const found = await ScoreExam.findOne({
           Content: {
             $all: [{ $elemMatch: { idiom: idiom, kids: kids } }],
           },
         });
+        console.log("#### ENCONTRADO EL SCORE EXAM ####");
 
         if (found) {
           console.log("FOUNDD");
@@ -40,6 +43,8 @@ module.exports = {
           const NameLevel = await ScoreExam.findOne({
             id_student: idStudent,
           }).populate("Content");
+
+          //  console.log("#### ####");
           let NameLevelFilter = NameLevel.Content.filter(function (elem) {
             return elem.kids == kids && idiom === idiom;
           }).pop();
@@ -143,11 +148,12 @@ module.exports = {
           success: true,
         });
       }
+
       const newScoreExam = new ScoreExam({
         id_student: idStudent,
         Content: level,
       });
-
+      console.log("NEW SCORE EXAM: %s", JSON.stringify(newScoreExam));
       await newScoreExam.save();
 
       return res.status(201).json({

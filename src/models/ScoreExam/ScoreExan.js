@@ -21,7 +21,7 @@ const ScoreExam = new Schema(
           {
             name_level: {
               type: String,
-              require: true,
+              unique: false,
             },
             Date: {
               type: Date,
