@@ -10,6 +10,10 @@ const clouddinary = require("cloudinary").v2;
 const { createRoles, createTypeMaterial } = require("./libs/initialSetup");
 const db = require("./connectDB");
 const cors = require("cors");
+const { graphqlHTTP } = require("express-graphql");
+const graphql = require("graphql");
+const { schema } = require("./models/roles");
+const schemaGraphql = require("./graphql/schema");
 require("dotenv").config();
 
 const app = express();
@@ -77,10 +81,20 @@ app.engine(
 app.set("view engine", "handlebars");
 
 // middleware passport
-
 app.use(session({ secret: "cats", resave: false, saveUninitialized: true }));
 app.use(passport.initialize());
 app.use(passport.session());
+
+const schemt = new graphql.GraphQLSchema({
+  query: schemaGraphql.QueryRoot,
+});
+app.use(
+  "/graphql",
+  graphqlHTTP({
+    schema: schemt,
+    graphiql: true,
+  })
+);
 
 app.get(
   "/google",
