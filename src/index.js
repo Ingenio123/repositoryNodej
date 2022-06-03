@@ -87,6 +87,7 @@ app.use(passport.session());
 
 const schemt = new graphql.GraphQLSchema({
   query: schemaGraphql.QueryRoot,
+  mutation: schemaGraphql.MutationRoot,
 });
 app.use(
   "/graphql",

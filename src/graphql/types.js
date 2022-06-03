@@ -7,14 +7,14 @@ const {
   GraphQLBoolean,
   GraphQLInt,
 } = graphql;
-//Object Types
+//Object Types Course
 const courseType = new GraphQLObjectType({
   name: "Course",
   fields: () => ({
     _id: { type: GraphQLString },
     DatepayCourse: { type: GraphQLString },
     ExpiresCourse: { type: GraphQLBoolean },
-    lessonTotal: { type: GraphQLString },
+    lessonTotal: { type: GraphQLInt },
     lesson: { type: GraphQLString },
     months: { type: GraphQLString },
     time: { type: GraphQLString },
@@ -24,6 +24,19 @@ const courseType = new GraphQLObjectType({
     kids: { type: GraphQLBoolean },
   }),
 });
+
+//Object types Student
+const StudentTypeSchema = new GraphQLObjectType({
+  name: "StudentType",
+  fields: () => ({
+    _id: { type: GraphqlID },
+    email: { type: GraphQLString },
+    courses: {
+      type: new GraphQLList(courseType),
+    },
+  }),
+});
+
 module.exports = {
   studentType: new GraphQLObjectType({
     name: "Student",
