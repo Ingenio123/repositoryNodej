@@ -1,6 +1,6 @@
 const controllerStudent = require("../controllersGraphql/Student");
 const { resolvers } = require("./resolvers");
-const { studentType } = require("./types");
+const { studentType, GraphQLDate } = require("./types");
 const {
   GraphQLID,
   GraphQLString,
@@ -49,14 +49,9 @@ module.exports = {
             description: "Email del student",
             type: new GraphQLNonNull(GraphQLString),
           },
-          idiom: {
-            description: "Idioma que desea agregar mas lessons",
+          idPackage: {
+            description: "Id package en formato string",
             type: new GraphQLNonNull(GraphQLString),
-          },
-          kids: {
-            description:
-              " false | true segun el package que desea agregar mas lessons",
-            type: new GraphQLNonNull(GraphQLBoolean),
           },
           numClassAdd: {
             description: "Numero de clases que vamos agregar",
@@ -64,8 +59,30 @@ module.exports = {
           },
         },
         resolve: async (parent, args) => {
-          console.log(parent);
+          console.log(args);
           return await controllerStudent.addLessons(args);
+        },
+      },
+      addNewDateExpires: {
+        description: "Para agragar una nueva date expires",
+        type: GraphQLBoolean,
+        args: {
+          email: {
+            type: new GraphQLNonNull(GraphQLString),
+            description: "email del estudiante",
+          },
+          dateExpires: {
+            type: GraphQLDate,
+            description: "fecha de expiracion del package",
+          },
+          idPackage: {
+            type: new GraphQLNonNull(GraphQLString),
+            description: "Id del package",
+          },
+        },
+        resolve: async (parent, args) => {
+          console.log(args);
+          return await controllerStudent.addNewExpiredDate(args);
         },
       },
     },

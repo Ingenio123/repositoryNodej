@@ -17,26 +17,27 @@ module.exports = {
   addLessons: async (req) => {
     try {
       let email = req.params === undefined ? req.email : req.params.email;
-      let idiom = req.params === undefined ? req.idiom : req.params.idiom;
-      let kids = req.params === undefined ? req.kids : req.params.kids;
+      let idPackage =
+        req.params == undefined ? req.idPackage : req.params.idPackage;
+      // let idiom = req.params === undefined ? req.idiom : req.params.idiom;
+      // let kids = req.params === undefined ? req.kids : req.params.kids;
       let numClassAdd =
         req.params === undefined ? req.numClassAdd : req.params.numClassAdd;
       //
-      if (!email || !idiom || !numClassAdd) return false;
+      if (!email || !idPackage || !numClassAdd) return false;
       // await StudentModel.findByIdAndUpdate({_id:id},{},{arrayFilters:[{"idiom":}]})
       const studentQuery = await StudentModel.findOne({
         email: email,
         courses: {
           $elemMatch: {
-            idiom: idiom,
-            kids: kids,
+            _id: idPackage,
           },
         },
       });
       if (!studentQuery) return false;
 
       let { lessonTotal } = studentQuery.courses.filter(
-        (element) => element.idiom == idiom && element.kids == kids
+        (element) => element._id == idPackage
       )[0];
       // console.log(datosFound);
       let calculo = lessonTotal + numClassAdd;
@@ -51,8 +52,7 @@ module.exports = {
           useFindAndModify: false,
           arrayFilters: [
             {
-              "index0.idiom": idiom,
-              "index0.kids": kids,
+              "index0._id": idPackage,
             },
           ],
         }
@@ -60,6 +60,40 @@ module.exports = {
       return true;
     } catch (error) {
       throw error;
+    }
+  },
+  addNewExpiredDate: async (req) => {
+    let emailParams = req.params == undefined ? req.email : req.params.email;
+    let dateExpires =
+      req.params == undefined ? req.dateExpires : req.params.dateExpires;
+    let idPackage =
+      req.params == undefined ? req.idPackage : req.paramsidPackage;
+    try {
+      let student = await StudentModel.findOne({ email: emailParams });
+      let { _id } = student;
+      await StudentModel.findByIdAndUpdate(
+        { _id },
+        {
+          $set: {
+            "courses.$[index0].expiresCours": dateExpires,
+            "courses.$[index0].ExpiresCourse": false,
+          },
+        },
+        {
+          new: true,
+          useFindAndModify: false,
+          arrayFilters: [
+            {
+              "index0._id": idPackage,
+            },
+          ],
+        }
+      );
+
+      return true;
+    } catch (error) {
+      console.log(error);
+      return false;
     }
   },
 };

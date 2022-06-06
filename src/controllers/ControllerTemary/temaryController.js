@@ -1,43 +1,35 @@
 const Temary = require("../../models/TemaryModel");
 
 const CreateOneTemary = async (req, res, next) => {
-  const { name_level, sublevel } = req.body;
+  const { name_level, content } = req.body;
   console.log(req.body);
+  try {
+    const QueryTemary = await Temary.findOne({ name_level });
 
-  const QueryTemary = await Temary.findOne({ name_level });
-
-  if (QueryTemary) {
-    if (QueryTemary.sublevel.length > 0) {
-      const resultadoFilter = QueryTemary.sublevel.filter((val) => {
-        return val.name_sublevel === sublevel[0].name_sublevel;
+    if (QueryTemary) {
+      let { _id } = QueryTemary;
+      await Temary.findByIdAndUpdate(_id, {
+        $set: { content: content },
       });
-
-      if (resultadoFilter.length === 0) {
-        await Temary.findOneAndUpdate(
-          { name_level: QueryTemary.name_level },
-          { $push: { sublevel: sublevel[0] } },
-          { useFindAndModify: false }
-        );
-      }
+      return res.status(200).json({
+        success: true,
+        message: "Se ha remplazado correctament el content.",
+      });
     }
+
+    const newTemary = new Temary({
+      name_level,
+      content,
+    });
+    await newTemary.save();
 
     return res.status(200).json({
       success: true,
-      message: "succesffully",
+      message: "Se ha agregado correctamente el nuevo temary",
     });
+  } catch (error) {
+    return res.status(500).json({ error: true });
   }
-
-  const newTemary = new Temary({
-    name_level,
-    sublevel,
-  });
-  console.log(newTemary);
-
-  await newTemary.save();
-  return res.status(200).json({
-    success: true,
-    message: "succesffully",
-  });
 };
 
 const AddItemstoSublevel = async (req, res, next) => {
