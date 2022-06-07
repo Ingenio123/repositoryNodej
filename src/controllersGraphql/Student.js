@@ -1,4 +1,7 @@
 const StudentModel = require("../models/student");
+const UserModel = require("../models/user");
+const RoleModel = require("../models/roles");
+const moment = require("moment");
 module.exports = {
   getAllStudents: async () => {
     return await StudentModel.find({}, { __v: 0 })
@@ -95,5 +98,55 @@ module.exports = {
       console.log(error);
       return false;
     }
+  },
+  addNewStudent: async (req) => {
+    let email = req.params == undefined ? req.email : req.params.email;
+    let lessons = req.params == undefined ? req.lesson : req.params.lesson;
+    let months = req.params == undefined ? req.months : req.params.months;
+    let time = req.params == undefined ? req.time : req.params.time;
+    let idiom = req.params == undefined ? req.idiom : req.params.idiom;
+    let kids = req.params == undefined ? req.kids : req.params.kids;
+    let calculoLessonTotal = lessons * months; // 2 * 3 = 6 lessons
+    //
+    let userFound = UserModel.findOne({ email: email });
+    let student = StudentModel.findOne({ email: email });
+    let role = RoleModel.findOne({ name: "student" });
+    //
+    let respuesta = await Promise.all([student, role, userFound]);
+    let ifStudent = respuesta[0];
+    let rol = respuesta[1];
+    let userFoundPromise = respuesta[2];
+
+    if (ifStudent || !userFoundPromise) return false;
+
+    let fechaFinal = moment().add(months, "M");
+
+    let user = UserModel.findOneAndUpdate(
+      { email: email },
+      {
+        $push: {
+          roles: rol._id,
+        },
+      }
+    );
+    const StudentNew = new StudentModel({
+      email: email,
+      courses: [
+        {
+          lesson: lessons,
+          months: months,
+          time: time,
+          kids: kids,
+          idiom: idiom,
+          lessonTotal: calculoLessonTotal,
+          expiresCours: fechaFinal,
+        },
+      ],
+    });
+    let saveStudent = StudentNew.save();
+
+    await Promise.all([user, saveStudent]);
+
+    return true;
   },
 };

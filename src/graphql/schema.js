@@ -1,6 +1,8 @@
 const controllerStudent = require("../controllersGraphql/Student");
+const controllerTemary = require("../controllersGraphql/temary");
+const controllerUser = require("../controllersGraphql/User");
 const { resolvers } = require("./resolvers");
-const { studentType, GraphQLDate } = require("./types");
+const { studentType, GraphQLDate, UserType } = require("./types");
 const {
   GraphQLID,
   GraphQLString,
@@ -32,6 +34,12 @@ module.exports = {
         },
         async resolve(parent, args) {
           return await controllerStudent.getOneStudent(args);
+        },
+      },
+      users: {
+        type: new GraphQLList(UserType),
+        resolve: async () => {
+          return await controllerUser.getUsers();
         },
       },
     },
@@ -83,6 +91,60 @@ module.exports = {
         resolve: async (parent, args) => {
           console.log(args);
           return await controllerStudent.addNewExpiredDate(args);
+        },
+      },
+      createTemary: {
+        description:
+          "Crear un nuevo temario / remplazar el temario ya realizado",
+        type: GraphQLBoolean,
+        args: {
+          nameLevel: {
+            type: new GraphQLNonNull(GraphQLString),
+            description: "Name del level del temary",
+          },
+          content_param: {
+            type: new GraphQLNonNull(GraphQLString),
+            description: "content del level",
+          },
+        },
+        resolve: async (_, args) => {
+          console.log(args);
+          return await controllerTemary.createOneTemary(args);
+        },
+      },
+      addNewStudent: {
+        description: "Add un estudent de user to student",
+        type: GraphQLBoolean,
+        args: {
+          email: {
+            description: "Email del user",
+            type: new GraphQLNonNull(GraphQLString),
+          },
+          lesson: {
+            description: "Num de lessons",
+            type: new GraphQLNonNull(GraphQLString),
+          },
+          months: {
+            description: "",
+            type: GraphQLInt,
+            defaultValue: 1,
+          },
+          time: {
+            description: "",
+            type: new GraphQLNonNull(GraphQLString),
+          },
+          idiom: {
+            description: "",
+            type: new GraphQLNonNull(GraphQLString),
+          },
+          kids: {
+            description: "",
+            type: GraphQLBoolean,
+            defaultValue: false,
+          },
+        },
+        resolve: async (_, args) => {
+          return await controllerStudent.addNewStudent(args);
         },
       },
     },

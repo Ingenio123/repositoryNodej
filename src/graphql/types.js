@@ -57,6 +57,29 @@ const GraphQLDate = new GraphQLScalarType({
   },
 });
 
+const RolGraphql = new GraphQLObjectType({
+  name: "RolType",
+  fields: () => ({
+    _id: { type: GraphQLID },
+    name: { type: GraphQLString },
+  }),
+});
+
+const GraphQLUsers = new GraphQLObjectType({
+  name: "UserType",
+  fields: () => ({
+    _id: { type: GraphQLID, description: "ID User" },
+    email: { type: GraphQLString, description: "Description" },
+    student: { type: GraphQLBoolean },
+    googleAuth: { type: GraphQLBoolean },
+    picture: { type: GraphQLString },
+    roles: { type: new GraphQLList(RolGraphql) },
+    Country: { type: GraphQLString },
+    Gender: { type: GraphQLString },
+    numberCell: { type: GraphQLString },
+  }),
+});
+
 module.exports = {
   GraphQLDate,
   studentType: new GraphQLObjectType({
@@ -70,4 +93,5 @@ module.exports = {
       },
     }),
   }),
+  UserType: GraphQLUsers,
 };
