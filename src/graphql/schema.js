@@ -126,7 +126,7 @@ module.exports = {
           },
           months: {
             description: "",
-            type: GraphQLInt,
+            type: GraphQLString,
             defaultValue: 1,
           },
           time: {
