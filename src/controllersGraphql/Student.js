@@ -149,4 +149,39 @@ module.exports = {
 
     return true;
   },
+  addPackage: async (req) => {
+    let email = req.params == undefined ? req.email : req.params.email;
+    let lessons = req.params == undefined ? req.lesson : req.params.lesson;
+    let months = req.params == undefined ? req.months : req.params.months;
+    let time = req.params == undefined ? req.time : req.params.time;
+    let idiom = req.params == undefined ? req.idiom : req.params.idiom;
+    let kids = req.params == undefined ? req.kids : req.params.kids;
+    let calculoLessonTotal = lessons * months; //2 * 3 = 6 months
+
+    let studentExist = await StudentModel.findOne({ email });
+    if (!studentExist) return false;
+    let { courses, _id } = studentExist;
+    let existPackage = courses.filter(
+      (e) => e.idiom === idiom && e.kids === kids
+    )[0];
+    if (existPackage) return false;
+    let fechaFinal = moment().add(months, "M");
+    await StudentModel.findByIdAndUpdate(
+      { _id },
+      {
+        $push: {
+          courses: {
+            lessonTotal: calculoLessonTotal,
+            lesson: lessons,
+            months: months,
+            time: time,
+            idiom: idiom,
+            expiresCours: fechaFinal,
+            kids: kids,
+          },
+        },
+      }
+    );
+    return true;
+  },
 };

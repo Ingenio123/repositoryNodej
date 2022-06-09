@@ -48,6 +48,43 @@ module.exports = {
     name: "MutationRoot",
     description: "Aqui se van a realizar todas las mutaciones",
     fields: {
+      AddNewPackageToStudent: {
+        description: "Asignarle un nuevo package a un student.",
+        type: GraphQLBoolean,
+        args: {
+          email: {
+            description: "Email del user",
+            type: new GraphQLNonNull(GraphQLString),
+          },
+          lesson: {
+            description: "Num de lessons",
+            type: new GraphQLNonNull(GraphQLString),
+          },
+          months: {
+            description: "",
+            type: GraphQLString,
+            defaultValue: 1,
+          },
+          time: {
+            description: "",
+            type: new GraphQLNonNull(GraphQLString),
+          },
+          idiom: {
+            description: "",
+            type: new GraphQLNonNull(GraphQLString),
+          },
+          kids: {
+            description: "",
+            type: GraphQLBoolean,
+            defaultValue: false,
+          },
+        },
+        resolve: async (_, args) => {
+          console.log(args);
+          return true;
+          // return await controllerStudent.addPackage(args);
+        },
+      },
       addLessonOneStudent: {
         description:
           "Aqui se agregara lessons a un student que se buscar por _id",
