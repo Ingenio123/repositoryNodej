@@ -2,6 +2,8 @@ const StudentModel = require("../models/student");
 const UserModel = require("../models/user");
 const RoleModel = require("../models/roles");
 const moment = require("moment");
+const axios = require("axios");
+
 module.exports = {
   getAllStudents: async () => {
     return await StudentModel.find({}, { __v: 0 })
@@ -158,31 +160,45 @@ module.exports = {
     let kids = req.params == undefined ? req.kids : req.params.kids;
     let calculoLessonTotal = lessons * months; //2 * 3 = 6 months
     // console.log(req);
-    let studentExist = await StudentModel.findOne({ email });
-    if (!studentExist) return false;
-    let { courses, _id } = studentExist;
-    let existPackage = courses.filter(
-      (e) => e.idiom === idiom && e.kids === kids
-    )[0];
-    if (existPackage) return false;
-    let fechaFinal = moment().add(months, "M");
-    await StudentModel.findByIdAndUpdate(
-      _id,
-      {
-        $push: {
-          courses: {
-            lessonTotal: calculoLessonTotal,
-            lesson: lessons,
-            months: months,
-            time: time,
-            idiom: idiom,
-            expiresCours: fechaFinal,
-            kids: kids,
+    try {
+      let studentExist = await StudentModel.findOne({ email });
+      if (!studentExist) return false;
+      let { courses, _id } = studentExist;
+      let existPackage = courses.filter(
+        (e) => e.idiom === idiom && e.kids === kids
+      )[0];
+      if (existPackage) return false;
+      let fechaFinal = moment().add(months, "M");
+      await StudentModel.findByIdAndUpdate(
+        _id,
+        {
+          $push: {
+            courses: {
+              lessonTotal: calculoLessonTotal,
+              lesson: lessons,
+              months: months,
+              time: time,
+              idiom: idiom,
+              expiresCours: fechaFinal,
+              kids: kids,
+            },
           },
         },
-      },
-      { upsert: true, new: true }
-    );
-    return true;
+        { upsert: true, new: true }
+      );
+      // let response = await axios.post(
+      //   "https://www.ingeniocalendar.com/api/student/add",
+      //   {
+      //     languages: idiom,
+      //     numClass: calculoLessonTotal,
+      //     studentId: _id,
+      //     email: email,
+      //   }
+      // );
+      // console.log(response);
+      return true;
+    } catch (error) {
+      throw error;
+    }
   },
 };
