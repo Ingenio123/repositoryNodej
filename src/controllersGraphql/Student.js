@@ -157,7 +157,7 @@ module.exports = {
     let idiom = req.params == undefined ? req.idiom : req.params.idiom;
     let kids = req.params == undefined ? req.kids : req.params.kids;
     let calculoLessonTotal = lessons * months; //2 * 3 = 6 months
-
+    // console.log(req);
     let studentExist = await StudentModel.findOne({ email });
     if (!studentExist) return false;
     let { courses, _id } = studentExist;
@@ -167,7 +167,7 @@ module.exports = {
     if (existPackage) return false;
     let fechaFinal = moment().add(months, "M");
     await StudentModel.findByIdAndUpdate(
-      { _id },
+      _id,
       {
         $push: {
           courses: {
@@ -180,7 +180,8 @@ module.exports = {
             kids: kids,
           },
         },
-      }
+      },
+      { upsert: true, new: true }
     );
     return true;
   },

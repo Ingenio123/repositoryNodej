@@ -81,8 +81,7 @@ module.exports = {
         },
         resolve: async (_, args) => {
           console.log(args);
-          return true;
-          // return await controllerStudent.addPackage(args);
+          return await controllerStudent.addPackage(args);
         },
       },
       addLessonOneStudent: {
