@@ -77,7 +77,7 @@ const ClientPay = async (req, res, next) => {
     email,
     emailCustom
   );
-  console.log("resultados: ", resultados);
+  // console.log("resultados: ", resultados);
   return res.status(200).json({
     message: "todo  salio bien tranquilo hombre aatt luis",
     resultados,
