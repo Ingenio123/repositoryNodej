@@ -84,7 +84,7 @@ const UpdateStudent = async (dataStudent, userData) => {
     Datos.idiom = resCache.dataCourse[i].idiom;
   }
   console.log(Datos);
-  const { success, data } = await VerifiyIdiom(userData, Datos); // si existe el package ->  idiom/kids
+  const { success, data } = await VerifiyIdiom(userData, Datos); // si existe el package ->  idiom/kids devolvera true caso contrario false
   console.log(success, data);
   if (!success) {
     // success -> false
@@ -100,9 +100,11 @@ const UpdateStudent = async (dataStudent, userData) => {
         useFindAndModify: false,
       }
     );
+    await DeleteCache(resCache.idCache);
+    return;
   }
   //
-  if (data.length > 0) {
+  if (Object.keys(data).length > 0) {
     const datafilter = data.courses
       .filter((e) => e.idiom === Datos.idiom && e.kids === Datos.kids)
       .pop();
@@ -110,6 +112,7 @@ const UpdateStudent = async (dataStudent, userData) => {
     await UpdateCourseExistente(userData, Datos, lessonTotal);
   }
   await DeleteCache(resCache.idCache);
+  return;
 };
 const VerifiyIdiom = async (userDataCache, Datos, data) => {
   // console.log("Datos" + JSON.stringify(Datos));
@@ -121,7 +124,7 @@ const VerifiyIdiom = async (userDataCache, Datos, data) => {
   });
 
   if (!studentExist) return { data: [], success: false };
-
+  console.log("############## EXISTE EL PACKAGE ############### ");
   return {
     data: studentExist,
     success: true,
